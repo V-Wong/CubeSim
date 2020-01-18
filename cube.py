@@ -1,4 +1,5 @@
-from typing import Tuple
+import numpy as np
+from pprint import pprint
 
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
@@ -23,3 +24,14 @@ class Cube:
 
     def _generate_face(self, colour: str, size: int):
         return [[colour for i in range(size)] for j in range(size)]
+
+    def rotate(self):
+        pass
+
+    def face_rotate(self, face: str, counter_clockwise: bool):
+        if not counter_clockwise:
+            self.faces[face] = \
+                    [list(row) for row in zip(*self.faces[face][::-1])]
+        else:
+            self.faces[face] = \
+                    [list(row)[::-1] for row in zip(*(self.faces[face]))]
