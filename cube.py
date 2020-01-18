@@ -56,55 +56,51 @@ class Cube:
                 = l[1:] + l[:1] if not counter_clockwise else l[-1:] + l[:-1]
 
         elif face == "R":
-            transposed_lists = [self._transpose(l) for l in 
+            l = [self._transpose(l) for l in 
                                 [self.faces["U"], self.faces["B"], self.faces["D"], self.faces["F"]]]
-            
-            temp = self.faces["U"].copy()
-            for i in range(3):            
-                transposed_lists[i][-1] = transposed_lists[i + 1][-1]
-            
-            transposed_lists[-1][-1] = temp[-1]
-            
+            r = l[1:] + l[:1] if counter_clockwise else l[-1:] + l[:-1]
+
+            l[0][-1], l[1][-1], l[2][-1], l[3][-1] \
+                = [t[-1] for t in r]
+
             for i, face in enumerate(["U", "B", "D", "F"]):
-                self.faces[face] = self._transpose(transposed_lists[i])
+                self.faces[face] = self._transpose(l[i])
 
         elif face == "L":
-            transposed_lists = [self._transpose(l) for l in 
+            l = [self._transpose(l) for l in 
                                 [self.faces["U"], self.faces["B"], self.faces["D"], self.faces["F"]]]
-            
-            temp = self.faces["U"].copy()
-            for i in range(3):            
-                transposed_lists[i][0] = transposed_lists[i + 1][0]
-            
-            transposed_lists[-1][0] = temp[0]
-            
+            r = l[1:] + l[:1] if not counter_clockwise else l[-1:] + l[:-1]
+
+            l[0][0], l[1][0], l[2][0], l[3][0] \
+                = [t[-1] for t in r]
+
             for i, face in enumerate(["U", "B", "D", "F"]):
-                self.faces[face] = self._transpose(transposed_lists[i])
+                self.faces[face] = self._transpose(l[i])
         
         elif face == "F":
             l = [self.faces["U"], self._transpose(self.faces["R"]), 
                  self.faces["D"], self._transpose(self.faces["L"])]
+            r = l[1:] + l[:1] if counter_clockwise else l[-1:] + l[:-1]
 
-            temp = self.faces["U"].copy()
-            self.faces["U"][-1] = l[1][0]
-            l[1][0] = self.faces["D"][0]
-            self.faces["D"][0] = l[3][0]
-            l[3][-1] = temp[0]
-            
+            l[0][-1], l[1][0], l[2][0], l[3][-1] \
+                = [t[-1] for t in r]
+
+            self.faces["U"][-1] = l[0][-1]
             self.faces["R"] = self._transpose(l[1])
+            self.faces["D"][0] = l[2][0]
             self.faces["L"] = self._transpose(l[3])
 
         elif face == "B":
             l = [self.faces["U"], self._transpose(self.faces["R"]), 
                  self.faces["D"], self._transpose(self.faces["L"])]
+            r = l[1:] + l[:1] if not counter_clockwise else l[-1:] + l[:-1]
 
-            temp = self.faces["U"].copy()
-            self.faces["U"][0] = l[1][-1]
-            l[1][-1] = self.faces["D"][-1]
-            self.faces["D"][-1] = l[3][-1]
-            l[3][0] = temp[-1]
-            
+            l[0][0], l[1][-1], l[2][-1], l[3][0] \
+                = [t[-1] for t in r]
+
+            self.faces["U"][0] = l[0][0]
             self.faces["R"] = self._transpose(l[1])
+            self.faces["D"][-1] = l[2][-1]
             self.faces["L"] = self._transpose(l[3])
 
     def _transpose(self, l: List[int]) -> List[int]:
