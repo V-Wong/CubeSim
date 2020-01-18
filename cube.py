@@ -1,3 +1,5 @@
+from typing import List
+
 import numpy as np
 from pprint import pprint
 
@@ -28,10 +30,27 @@ class Cube:
     def rotate(self):
         pass
 
-    def face_rotate(self, face: str, counter_clockwise: bool):
+    def _face_rotate(self, face: str, counter_clockwise: bool):
         if not counter_clockwise:
             self.faces[face] = \
                     [list(row) for row in zip(*self.faces[face][::-1])]
         else:
             self.faces[face] = \
                     [list(row)[::-1] for row in zip(*(self.faces[face]))]
+
+    def _adjacent_face_swap(self, face: str, counter_clockwise: bool):
+        if face == "U":
+            l = [self.faces["F"][0], self.faces["L"][0], \
+                 self.faces["B"][0], self.faces["R"][0]]
+
+            self.faces["F"][0], self.faces["L"][0], \
+            self.faces["B"][0], self.faces["R"][0] \
+                = l[1:] + l[:1] if counter_clockwise else l[-1:] + l[:-1]
+
+        elif face == "D":
+            l = [self.faces["F"][-1], self.faces["L"][-1], \
+                 self.faces["B"][-1], self.faces["R"][-1]]
+
+            self.faces["F"][-1], self.faces["L"][-1], \
+            self.faces["B"][-1], self.faces["R"][-1] \
+                = l[1:] + l[:1] if not counter_clockwise else l[-1:] + l[:-1]
