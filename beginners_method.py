@@ -36,3 +36,36 @@ def solve_cross(cube: Cube):
                 break
 
     cube._do_moves(scramble_to_moves("D2"))
+
+
+def solve_corners(cube: Cube):
+    CORNERS = {
+        "UFR": "U2 U2",
+        "DFR": "R U R' U'",
+        "DBR": "R' U R U",
+        "UBR": "R'",
+        "UFL": "U'",
+        "UBL": "U2",
+        "DFL": "L' U' L",
+        "DBL": "L U L' U" 
+    }
+
+    for colour1, colour2 in [(GREEN, RED), (BLUE, RED), (BLUE, ORANGE), (GREEN, ORANGE)]:
+        for corner in CORNERS:
+            cur_corner = cube.get_corner_info(corner)
+            if (colour1 in cur_corner and colour2 in cur_corner and YELLOW in cur_corner):
+                cube._do_moves(scramble_to_moves(CORNERS[corner]))
+                cur_corner = cube.get_corner_info("UFR")
+                if cur_corner[0] == YELLOW:
+                    moves = scramble_to_moves("U R U2 R' U R U' R'")
+                elif cur_corner[1] == YELLOW:
+                    moves = scramble_to_moves("U R U' R'")
+                elif cur_corner[2] == YELLOW:
+                    moves = scramble_to_moves("R U R'")
+                
+                cube._do_moves(moves)
+                cube._do_moves(scramble_to_moves("D'"))
+
+                break
+
+                
