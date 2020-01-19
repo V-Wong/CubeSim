@@ -1,7 +1,9 @@
-from typing import List
+from typing import List, Tuple
 
 import numpy as np
 from pprint import pprint
+
+from scramble_parser import scramble_to_moves
 
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
@@ -23,6 +25,8 @@ class Cube:
             "R": self._generate_face(RED, size),
             "D": self._generate_face(YELLOW, size),
         }
+
+        self.scramble = None
 
     def _generate_face(self, colour: str, size: int):
         return [[colour for i in range(size)] for j in range(size)]
@@ -107,3 +111,17 @@ class Cube:
 
     def _transpose(self, l: List[int]) -> List[int]:
         return [list(i) for i in zip(*l)]
+
+    def set_scramble(self, scramble: str):
+        self.scramble = scramble_to_moves(scramble)
+        for move in self.scramble:
+            self.rotate(*move)
+
+    def cheat_solve(self) -> List[Tuple[str, bool, bool]]:
+        solution = []
+
+        for move in self.scramble[::-1]:
+            face, prime, double = move
+            solution.append((face, not prime, double))
+
+        return solution

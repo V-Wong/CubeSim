@@ -31,9 +31,14 @@ class Gui:
                     if key in {"u", "f", "l", "r", "d", "b"}:
                         self.cube.rotate(key.upper(), prime, False)
 
-            self.draw_cube()
-            pygame.display.update()
+                    if event.key == pygame.K_SPACE:
+                        for move in self.cube.cheat_solve():
+                            self.cube.rotate(*move)
+                            self.draw_cube()
+                            time.sleep(0.1)
 
+            self.draw_cube()
+            
     def draw_cube(self):
         for face_num, face in enumerate(["U", "F", "D", "B", "L", "R"]):
             for row_num, row in enumerate(self.cube.faces[face]):
@@ -56,12 +61,11 @@ class Gui:
                     pygame.draw.rect(self.screen, cubie, (x, y, CUBIE_SIZE, CUBIE_SIZE), 0)
                     pygame.draw.rect(self.screen, (0, 0, 0), (x, y, CUBIE_SIZE, CUBIE_SIZE), 5)
 
+        pygame.display.update()
 
 if __name__ == "__main__":
     cube = Cube(3)
-    scramble = scramble_to_moves("L' F' R D2 R D2 B2 F2 L R2 U2 R F2 U2 B' U' B' D B' U2 F'")
-    for move in scramble:
-        print(move)
-        cube.rotate(*move)
+    scramble = "L' F' R D2 R D2 B2 F2 L R2 U2 R F2 U2 B' U' B' D B' U2 F R2 U R' F' B D' F' B' U R U2 F2 R2 F2 L' U2 R D2 R D2"
+    cube.set_scramble(scramble)
     gui = Gui(cube)
     gui.run()
