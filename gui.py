@@ -50,14 +50,11 @@ class Gui:
                     else:
                         horizontal_adjust = 0
                         
-                    pygame.draw.rect(self.screen, cubie,
-                                     (WIDTH / 3 + cubie_num * CUBIE_SIZE + horizontal_adjust,
-                                      self.cube.size * face_num * CUBIE_SIZE + row_num * CUBIE_SIZE,
-                                      CUBIE_SIZE, CUBIE_SIZE), 0)
-                    pygame.draw.rect(self.screen, (0, 0, 0),
-                                     (WIDTH / 3 + cubie_num * CUBIE_SIZE + horizontal_adjust,
-                                      self.cube.size * face_num * CUBIE_SIZE + row_num * CUBIE_SIZE,
-                                      CUBIE_SIZE, CUBIE_SIZE), 5)
+                    x = WIDTH / 3 + cubie_num * CUBIE_SIZE + horizontal_adjust
+                    y = self.cube.size * face_num * CUBIE_SIZE + row_num * CUBIE_SIZE
+                    
+                    pygame.draw.rect(self.screen, cubie, (x, y, CUBIE_SIZE, CUBIE_SIZE), 0)
+                    pygame.draw.rect(self.screen, (0, 0, 0), (x, y, CUBIE_SIZE, CUBIE_SIZE), 5)
 
 
 if __name__ == "__main__":
