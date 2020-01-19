@@ -27,36 +27,32 @@ class Cube:
     def _generate_face(self, colour: str, size: int):
         return [[colour for i in range(size)] for j in range(size)]
 
-    def rotate(self, face: str, double: bool, prime: bool):
+    def rotate(self, face: str, prime: bool, double: bool):
         if double:
-            self._face_rotate(face, False)
-            self._adjacent_face_swap(face, False)
-            self._face_rotate(face, False)
-            self._adjacent_face_swap(face, False)
+            self._face_rotate(face)
+            self._adjacent_face_swap(face)
+            self._face_rotate(face)
+            self._adjacent_face_swap(face)
         elif prime:
             for i in range(3):
-                self._face_rotate(face, prime)
-                self._adjacent_face_swap(face, prime)
+                self._face_rotate(face)
+                self._adjacent_face_swap(face)
         else:
-            self._face_rotate(face, prime)
-            self._adjacent_face_swap(face, prime)
+            self._face_rotate(face)
+            self._adjacent_face_swap(face)
             
-    def _face_rotate(self, face: str, counter_clockwise: bool):
-        if not counter_clockwise:
-            self.faces[face] = \
-                    [list(row) for row in zip(*self.faces[face][::-1])]
-        else:
-            self.faces[face] = \
-                    [list(row) for row in zip(*(self.faces[face]))]
+    def _face_rotate(self, face: str):
+        self.faces[face] = \
+                [list(row) for row in zip(*self.faces[face][::-1])]
 
-    def _adjacent_face_swap(self, face: str, counter_clockwise: bool):
+    def _adjacent_face_swap(self, face: str):
         if face == "U":
             l = [self.faces["F"][0], self.faces["L"][0], \
                  self.faces["B"][0], self.faces["R"][0]]
 
             self.faces["F"][0], self.faces["L"][0], \
             self.faces["B"][0], self.faces["R"][0] \
-                = l[1:] + l[:1] if counter_clockwise else l[-1:] + l[:-1]
+                = l[-1:] + l[:-1]
 
         elif face == "D":
             l = [self.faces["F"][-1], self.faces["L"][-1], \
@@ -64,7 +60,7 @@ class Cube:
 
             self.faces["F"][-1], self.faces["L"][-1], \
             self.faces["B"][-1], self.faces["R"][-1] \
-                = l[1:] + l[:1] if not counter_clockwise else l[-1:] + l[:-1]
+                = l[1:] + l[:1]
 
         elif face == "R":
             l = [self._transpose(l) for l in 
