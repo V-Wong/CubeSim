@@ -7,7 +7,7 @@ from pygame.locals import *
 from cube import Cube
 from scramble_parser import scramble_to_moves
 
-HEIGHT = 1600
+HEIGHT = 1200
 WIDTH = 1800
 CUBIE_SIZE = 100
 
@@ -43,6 +43,9 @@ class Gui:
                     elif face == "R":
                         face_num = 1
                         horizontal_adjust = self.cube.size * CUBIE_SIZE
+                    elif face == "B":
+                        face_num = 1
+                        horizontal_adjust = 2 * self.cube.size * CUBIE_SIZE
                     else:
                         horizontal_adjust = 0
                         
