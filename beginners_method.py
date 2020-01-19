@@ -69,3 +69,46 @@ def solve_corners(cube: Cube):
                 break
 
                 
+def solve_middle_edges(cube: Cube):
+    EDGES = {
+        "UF": "U2 U2",
+        "UR": "U",
+        "UL": "U'",
+        "UB": "U2",
+        "RF": "R' F R F' R U R' U'",
+        "LF": "L F' L' F L' U' L U",
+        "RB": "R' U R B' R B R'",
+        "LB": "L U' L' B L' B' L"
+    }
+
+    for colour1, colour2 in [(GREEN, RED), (RED, BLUE), (BLUE, ORANGE), (ORANGE, GREEN)]:
+        for edge in EDGES:
+            cur_edge = cube.get_edge_info(edge)
+            if (cur_edge == (colour1, colour2)
+                    or cur_edge == (colour2, colour1)):
+                cube._do_moves(scramble_to_moves(EDGES[edge]))
+                cur_edge = cube.get_edge_info("UF")
+                if cur_edge[1] == colour1:
+                    moves = scramble_to_moves("U R U' R' F R' F' R")
+                else:
+                    moves = scramble_to_moves("U2 R' F R F' R U R'")
+                cube._do_moves(moves)
+                cube.y_rotate()
+
+                break
+
+def solve_oll(cube: Cube):
+    for i in range(4):
+        top_layer = [cube.faces["U"][0][1], cube.faces["U"][1][2], 
+                     cube.faces["U"][2][1], cube.faces["U"][1][0]]
+        eo_state = [face == WHITE for face in top_layer]
+
+        if eo_state == [False, False, False, False]:
+            cube._do_moves(scramble_to_moves("R U2 R2 F R F' U2 R' F R F'"))
+            break
+        elif eo_state == [False, False, True, True]:
+            cube._do_moves(scramble_to_moves("R U2 R2 F R F' U2 R' F R F'"))
+            break
+        elif eo_state == [False, True, False, True]:
+            cube._do_moves(scramble_to_moves("F R U R' U' F'"))
+            break
