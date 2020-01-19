@@ -21,14 +21,15 @@ class Gui:
         running = True
         while running:
             for event in pygame.event.get():
+                prime = pygame.key.get_pressed()[pygame.K_LSHIFT]
                 if event.type == pygame.QUIT:
-                    running = sys.exit()
+                    running = False
 
                 if event.type == pygame.KEYDOWN:
                     key = pygame.key.name(event.key)
 
                     if key in {"u", "f", "l", "r", "d", "b"}:
-                        self.cube.rotate(key.upper(), False, False)
+                        self.cube.rotate(key.upper(), prime, False)
 
             self.draw_cube()
             pygame.display.update()
