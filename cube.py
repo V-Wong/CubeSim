@@ -47,16 +47,14 @@ class Cube:
 
     def _adjacent_face_swap(self, face: str):
         if face == "U":
-            l = [self.faces["F"][0], self.faces["L"][0], \
-                 self.faces["B"][0], self.faces["R"][0]]
-
+            l = [self.faces[face][0] for face in ["F", "L", "B", "R"]]
+            
             self.faces["F"][0], self.faces["L"][0], \
             self.faces["B"][0], self.faces["R"][0] \
                 = l[-1:] + l[:-1]
 
         elif face == "D":
-            l = [self.faces["F"][-1], self.faces["L"][-1], \
-                 self.faces["B"][-1], self.faces["R"][-1]]
+            l = [self.faces[face][-1] for face in ["F", "L", "B", "R"]]
 
             self.faces["F"][-1], self.faces["L"][-1], \
             self.faces["B"][-1], self.faces["R"][-1] \
@@ -64,7 +62,7 @@ class Cube:
 
         elif face == "R":
             l = [self._transpose(l) for l in 
-                                [self.faces["U"], self.faces["B"], self.faces["D"], self.faces["F"]]]
+                 [self.faces[face] for face in ["U", "B", "D", "F"]]]
             r = [l[0][-1][::-1], l[1][0][::-1], l[2][-1], l[3][-1]]
 
             l[0][-1], l[1][0], l[2][-1], l[3][-1] = r[-1:] + r[:-1]
@@ -74,7 +72,7 @@ class Cube:
 
         elif face == "L":
             l = [self._transpose(l) for l in 
-                                [self.faces["U"], self.faces["F"], self.faces["D"], self.faces["B"]]]
+                 [self.faces[face] for face in ["U", "F", "D", "B"]]]
             r = [l[0][0], l[1][0], l[2][0][::-1], l[3][-1][::-1]]
 
             l[0][0], l[1][0], l[2][0], l[3][-1] = r[-1:] + r[:-1]
