@@ -1,9 +1,14 @@
-from cube import Cube
+from pprint import pprint
+import time
+
 import pygame
 from pygame.locals import *
 
+from cube import Cube
+from scramble_parser import scramble_to_moves
+
 HEIGHT = 1600
-WIDTH = 2000
+WIDTH = 1800
 CUBIE_SIZE = 100
 
 
@@ -15,6 +20,16 @@ class Gui:
     def run(self):
         running = True
         while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = sys.exit()
+
+                if event.type == pygame.KEYDOWN:
+                    key = pygame.key.name(event.key)
+
+                    if key in {"u", "f", "l", "r", "d", "b"}:
+                        self.cube.rotate(key.upper(), False, False)
+
             self.draw_cube()
             pygame.display.update()
 
@@ -34,10 +49,18 @@ class Gui:
                     pygame.draw.rect(self.screen, cubie,
                                      (WIDTH / 3 + cubie_num * CUBIE_SIZE + horizontal_adjust,
                                       self.cube.size * face_num * CUBIE_SIZE + row_num * CUBIE_SIZE,
-                                      CUBIE_SIZE, CUBIE_SIZE), 1)
+                                      CUBIE_SIZE, CUBIE_SIZE), 0)
+                    pygame.draw.rect(self.screen, (0, 0, 0),
+                                     (WIDTH / 3 + cubie_num * CUBIE_SIZE + horizontal_adjust,
+                                      self.cube.size * face_num * CUBIE_SIZE + row_num * CUBIE_SIZE,
+                                      CUBIE_SIZE, CUBIE_SIZE), 5)
 
 
 if __name__ == "__main__":
-    cube = Cube(4)
+    cube = Cube(3)
+    scramble = scramble_to_moves("L' F' R D2 R D2 B2 F2 L R2 U2 R F2 U2 B' U' B' D B' U2 F'")
+    for move in scramble:
+        print(move)
+        cube.rotate(*move)
     gui = Gui(cube)
     gui.run()
