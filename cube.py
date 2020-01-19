@@ -112,6 +112,42 @@ class Cube:
     def _transpose(self, l: List[int]) -> List[int]:
         return [list(i) for i in zip(*l)]
 
+    def get_edge_info(self, piece: str) -> Tuple[int, int]:
+        """
+        We can information about an edge by doing moves to
+        place it in UF, then analyse UF and undo the moves.
+        """
+
+        moves = scramble_to_moves({
+                "UF": "U2 U2",
+                "UL": "U'",
+                "UR": "U",
+                "UB": "U2",
+                "LB": "L2 F",
+                "LD": "L' F",
+                "LF": "F",
+                "RB": "R2 F'",
+                "RD": "R F'",
+                "RF": "F'",
+                "DB": "D2 F2",
+                "DF": "F2"
+        }[piece])
+
+        self._do_moves(moves)
+        info = (self.faces["U"][-1][1], self.faces["F"][0][1])
+        self._invert_moves(moves)
+
+        return info
+
+    def _do_moves(self, moves: List[Tuple[str, bool, bool]]):
+        for move in moves:
+            self.rotate(*move)
+
+    def _invert_moves(self, moves: List[Tuple[str, bool, bool]]):
+        for move in moves[::-1]:
+            face, prime, double = move
+            self.rotate(face, not prime, double)
+
     def set_scramble(self, scramble: str):
         self.scramble = scramble_to_moves(scramble)
         for move in self.scramble:
