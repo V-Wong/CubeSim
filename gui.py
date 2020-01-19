@@ -6,6 +6,7 @@ from pygame.locals import *
 
 from cube import Cube
 from scramble_parser import scramble_to_moves
+from beginners_method import solve_cross
 
 HEIGHT = 1200
 WIDTH = 1800
@@ -65,7 +66,8 @@ class Gui:
 
 if __name__ == "__main__":
     cube = Cube(3)
-    scramble = "L' F' R D2 R D2 B2 F2 L R2 U2 R F2 U2 B' U' B' D B' U2 F R2 U R' F' B D' F' B' U R U2 F2 R2 F2 L' U2 R D2 R D2"
+    scramble = "D2 R' B2 R D2 F' D' B2 U' F' D2 B R2 B' L2 B' L2 F R2 U2"
     cube.set_scramble(scramble)
+    solve_cross(cube)
     gui = Gui(cube)
     gui.run()
