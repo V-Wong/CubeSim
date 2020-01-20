@@ -6,7 +6,7 @@ from pygame.locals import *
 
 from cube import Cube
 from scramble_parser import scramble_to_moves
-from beginners_method import solve_cross, solve_corners, solve_middle_edges, solve_eoll, solve_ocll, solve_cpll, solve_epll
+from beginners_method import Solution
 
 HEIGHT = 1200
 WIDTH = 1800
@@ -30,13 +30,12 @@ class Gui:
                     key = pygame.key.name(event.key)
 
                     if key in {"u", "f", "l", "r", "d", "b"}:
-                        self.cube.rotate(key.upper(), prime, False)
-
-                    if event.key == pygame.K_SPACE:
-                        for move in self.cube.cheat_solve():
-                            self.cube.rotate(*move)
+                        self.cube._rotate(key.upper(), prime, False)
+                    elif event.key == pygame.K_SPACE:
+                        for move in Solution(cube).generate_solution():
+                            self.cube.do_moves([move])
                             self.draw_cube()
-                            time.sleep(0.1)
+                            time.sleep(0.05)
 
             self.draw_cube()
             
@@ -68,12 +67,6 @@ if __name__ == "__main__":
     cube = Cube(3)
     scramble = "U2 L F B R F2 B2 R U D2 F2 L2 F D2 B' R2 F' D2 F U2 B2"
     cube.set_scramble(scramble)
-    solve_cross(cube)
-    solve_corners(cube)
-    solve_middle_edges(cube)
-    solve_eoll(cube)
-    solve_ocll(cube)
-    solve_cpll(cube)
-    solve_epll(cube)
+
     gui = Gui(cube)
     gui.run()

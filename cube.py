@@ -26,11 +26,12 @@ class Cube:
         }
 
         self.scramble = None
+        self.move_history = []
 
     def _generate_face(self, colour: str, size: int):
         return [[colour for i in range(size)] for j in range(size)]
 
-    def rotate(self, face: str, prime: bool=False, double: bool=False):
+    def _rotate(self, face: str, prime: bool=False, double: bool=False):
         if double:
             self._face_rotate(face)
             self._adjacent_face_swap(face)
@@ -123,6 +124,8 @@ class Cube:
         self._face_rotate("D")
         self._face_rotate("D")
 
+        self.move_history.append(("y", False, False))
+
     def get_edge_info(self, piece: str) -> Tuple[int, int]:
         """
         We can information about an edge by doing moves to
@@ -144,9 +147,9 @@ class Cube:
                 "DF": "F2"
         }[piece])
 
-        self._do_moves(moves)
+        self.do_moves(moves, False)
         info = (self.faces["U"][-1][1], self.faces["F"][0][1])
-        self._invert_moves(moves)
+        self._invert_moves(moves, False)
 
         return info
 
@@ -162,28 +165,38 @@ class Cube:
                 "DBL": "L2 U'" 
         }[piece])
 
-        self._do_moves(moves)
+        self.do_moves(moves, False)
         info = (self.faces["U"][-1][-1], self.faces["F"][0][-1], self.faces["R"][0][0])
-        self._invert_moves(moves)
+        self._invert_moves(moves, False)
 
         return info
 
-    def _do_moves(self, moves: List[Tuple[str, bool, bool]]=[]):
+    def do_moves(self, moves: List[Tuple[str, bool, bool]], 
+                  save_history: bool=True):
         if isinstance(moves, str):
             moves = scramble_to_moves(moves)
 
         for move in moves:
-            self.rotate(*move)
+            if move[0] == "y":
+                self.y_rotate()
+            else:
+                self._rotate(*move)
 
-    def _invert_moves(self, moves: List[Tuple[str, bool, bool]]):
+            if save_history:
+                self.move_history.append(move)
+
+    def _invert_moves(self, moves: List[Tuple[str, bool, bool]],
+                      save_history: bool=True):
         for move in moves[::-1]:
+            if save_history:
+                self.move_history.append(move)
             face, prime, double = move
-            self.rotate(face, not prime, double)
+            self._rotate(face, not prime, double)
 
     def set_scramble(self, scramble: str):
         self.scramble = scramble_to_moves(scramble)
         for move in self.scramble:
-            self.rotate(*move)
+            self._rotate(*move)
 
     def cheat_solve(self) -> List[Tuple[str, bool, bool]]:
         solution = []
