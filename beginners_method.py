@@ -155,3 +155,15 @@ def solve_ocll(cube: Cube):
             else:
                 cube._do_moves(scramble_to_moves("U " + OCLLS["AS"]))
             break
+
+
+def solve_cpll(cube: Cube):
+    alg = "R' U L' U2 R U' R' U2 R L "
+
+    for i in range(4):
+        if cube.faces["F"][0][0] == cube.faces["F"][0][2]:
+            cube._do_moves(scramble_to_moves(alg))
+            break
+        cube.rotate("U", False, False)
+    else:
+        cube._do_moves(scramble_to_moves(alg + " U " + alg))
