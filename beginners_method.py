@@ -167,3 +167,24 @@ def solve_cpll(cube: Cube):
         cube.rotate("U", False, False)
     else:
         cube._do_moves(scramble_to_moves(alg + " U " + alg))
+
+
+def solve_epll(cube: Cube):
+    if cube.faces["F"][0][1] != cube.faces["F"][0][2] and cube.faces["R"][0][1] != cube.faces["R"][0][2]:
+        for i in range(4):
+            if cube.faces["B"][0][0] == cube.faces["B"][0][1]:
+                while cube.faces["F"][0][0] != cube.faces["F"][0][1]:
+                    cube._do_moves(scramble_to_moves("R U' R U R U R U' R' U' R2"))
+                break
+            cube.rotate("U", False, False)
+        else:
+            for i in range(4):
+                cube._do_moves(scramble_to_moves("R U' R U R U R U' R' U' R2"))
+                if cube.faces["B"][0][0] == cube.faces["B"][0][1]:
+                    while cube.faces["F"][0][0] != cube.faces["F"][0][1]:
+                        cube._do_moves(scramble_to_moves("R U' R U R U R U' R' U' R2"))
+                    break
+            cube.rotate("U", False, False)
+        
+    while cube.faces["F"][0][1] != cube.faces["F"][1][1]:
+        cube.rotate("U", False, False)
