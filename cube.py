@@ -111,6 +111,18 @@ class Cube:
     def _transpose(self, l: List[int]) -> List[int]:
         return [list(i) for i in zip(*l)]
 
+    def y_rotate(self, invert: bool=False):
+        l = [self.faces[face] for face in ["F", "L", "B", "R"]]
+
+        self.faces["F"], self.faces["L"], \
+        self.faces["B"], self.faces["R"] \
+            = l[-1:] + l[:-1]
+
+        self._face_rotate("U")
+        self._face_rotate("D")
+        self._face_rotate("D")
+        self._face_rotate("D")
+
     def get_edge_info(self, piece: str) -> Tuple[int, int]:
         """
         We can information about an edge by doing moves to
@@ -134,6 +146,24 @@ class Cube:
 
         self._do_moves(moves)
         info = (self.faces["U"][-1][1], self.faces["F"][0][1])
+        self._invert_moves(moves)
+
+        return info
+
+    def get_corner_info(self, piece: str) -> Tuple[int, int, int]:
+        moves = scramble_to_moves({
+                "UFR": "U2 U2",
+                "DFR": "R",
+                "DBR": "R2",
+                "UBR": "R'",
+                "UFL": "U'",
+                "UBL": "U2",
+                "DFL": "L' U'",
+                "DBL": "L2 U'" 
+        }[piece])
+
+        self._do_moves(moves)
+        info = (self.faces["U"][-1][-1], self.faces["F"][0][-1], self.faces["R"][0][0])
         self._invert_moves(moves)
 
         return info
