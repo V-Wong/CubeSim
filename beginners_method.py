@@ -97,7 +97,8 @@ def solve_middle_edges(cube: Cube):
 
                 break
 
-def solve_oll(cube: Cube):
+
+def solve_eoll(cube: Cube):
     for i in range(4):
         top_layer = [cube.faces["U"][0][1], cube.faces["U"][1][2], 
                      cube.faces["U"][2][1], cube.faces["U"][1][0]]
@@ -107,8 +108,50 @@ def solve_oll(cube: Cube):
             cube._do_moves(scramble_to_moves("R U2 R2 F R F' U2 R' F R F'"))
             break
         elif eo_state == [False, False, True, True]:
-            cube._do_moves(scramble_to_moves("R U2 R2 F R F' U2 R' F R F'"))
+            cube._do_moves(scramble_to_moves("U F U R U' R' F''"))
             break
         elif eo_state == [False, True, False, True]:
             cube._do_moves(scramble_to_moves("F R U R' U' F'"))
+            break
+        else:
+            cube.y_rotate()
+
+
+def solve_ocll(cube: Cube):
+    OCLLS = {
+        "S": "R U R' U R U2 R'",
+        "AS": "R' U' R U' R' U2 R",
+        "Headlights": "R2 D' R U2 R' D R U2 R",
+        "Sidebars": "L F R' F' L' F R F'",
+        "Fish": "U' R' F R B' R' F' R B"
+    }
+
+    for i in range(4):
+        top_layer = [cube.faces["U"][0][0], cube.faces["U"][0][2], 
+                     cube.faces["U"][2][0], cube.faces["U"][2][2]]
+        co_state = [face == WHITE for face in top_layer]
+
+        if co_state.count(True) == 0:
+            cube._do_moves(scramble_to_moves(OCLLS["S"]))
+
+        if co_state.count(True) == 2:
+            while ((cube.faces["U"][2][0] != WHITE and cube.faces["U"][2][2] != WHITE)
+                    or cube.faces["U"][2][0] != WHITE and cube.faces["U"][0][2] != WHITE):
+                cube.rotate("U", False, False)
+            if cube.faces["U"][2][0] == WHITE and cube.faces["U"][2][2] == WHITE:
+                if cube.faces["U"][0][0] == WHITE:
+                    cube._do_moves(scramble_to_moves(OCLLS["Headlights"]))
+                else:
+                    cube._do_moves(scramble_to_moves("U' " + OCLLS["Sidebars"]))
+            else:
+                while cube.faces["F"][0][2] != WHITE:
+                    cube.rotate("U", False, False)
+                cube._do_moves(scramble_to_moves(OCLLS["Fish"]))
+        elif co_state.count(True) == 1:
+            while cube.faces["U"][2][0] != WHITE:
+                cube.rotate("U", False, False)
+            if cube.get_corner_info("UFR")[1] == WHITE:
+                cube._do_moves(scramble_to_moves(OCLLS["S"]))
+            else:
+                cube._do_moves(scramble_to_moves("U " + OCLLS["AS"]))
             break
