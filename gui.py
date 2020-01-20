@@ -6,7 +6,7 @@ from pygame.locals import *
 
 from cube import Cube
 from scramble_parser import scramble_to_moves
-from beginners_method import solve_cross
+from beginners_method import solve_cross, solve_corners, solve_middle_edges, solve_eoll, solve_ocll, solve_cpll, solve_epll
 
 HEIGHT = 1200
 WIDTH = 1800
@@ -66,8 +66,14 @@ class Gui:
 
 if __name__ == "__main__":
     cube = Cube(3)
-    scramble = "D2 R' B2 R D2 F' D' B2 U' F' D2 B R2 B' L2 B' L2 F R2 U2"
+    scramble = "U2 L F B R F2 B2 R U D2 F2 L2 F D2 B' R2 F' D2 F U2 B2"
     cube.set_scramble(scramble)
     solve_cross(cube)
+    solve_corners(cube)
+    solve_middle_edges(cube)
+    solve_eoll(cube)
+    solve_ocll(cube)
+    solve_cpll(cube)
+    solve_epll(cube)
     gui = Gui(cube)
     gui.run()

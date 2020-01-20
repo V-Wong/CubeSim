@@ -30,7 +30,7 @@ class Cube:
     def _generate_face(self, colour: str, size: int):
         return [[colour for i in range(size)] for j in range(size)]
 
-    def rotate(self, face: str, prime: bool, double: bool):
+    def rotate(self, face: str, prime: bool=False, double: bool=False):
         if double:
             self._face_rotate(face)
             self._adjacent_face_swap(face)
@@ -168,7 +168,10 @@ class Cube:
 
         return info
 
-    def _do_moves(self, moves: List[Tuple[str, bool, bool]]):
+    def _do_moves(self, moves: List[Tuple[str, bool, bool]]=[]):
+        if isinstance(moves, str):
+            moves = scramble_to_moves(moves)
+
         for move in moves:
             self.rotate(*move)
 
