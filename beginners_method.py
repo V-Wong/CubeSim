@@ -43,7 +43,7 @@ def solve_corners(cube: Cube):
         "UFR": "U2 U2",
         "DFR": "R U R' U'",
         "DBR": "R' U R U",
-        "UBR": "R'",
+        "UBR": "U",
         "UFL": "U'",
         "UBL": "U2",
         "DFL": "L' U' L",
