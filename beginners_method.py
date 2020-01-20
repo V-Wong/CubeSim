@@ -131,15 +131,18 @@ def solve_ocll(cube: Cube):
                      cube.faces["U"][2][0], cube.faces["U"][2][2]]
         co_state = [face == WHITE for face in top_layer]
 
-        if co_state.count(True) == 0:
-            cube._do_moves(scramble_to_moves(OCLLS["S"]))
+        while co_state.count(True) == 0:
+            cube._do_moves(scramble_to_moves(OCLLS["S"] + "U"))
+            top_layer = [cube.faces["U"][0][0], cube.faces["U"][0][2], 
+                         cube.faces["U"][2][0], cube.faces["U"][2][2]]
+            co_state = [face == WHITE for face in top_layer]
 
         if co_state.count(True) == 2:
-            while ((cube.faces["U"][2][0] != WHITE and cube.faces["U"][2][2] != WHITE)
-                    or cube.faces["U"][2][0] != WHITE and cube.faces["U"][0][2] != WHITE):
+            while ((cube.faces["U"][2][0] != cube.faces["U"][2][2])
+                    and cube.faces["U"][2][0] != cube.faces["U"][0][2]):
                 cube.rotate("U", False, False)
-            if cube.faces["U"][2][0] == WHITE and cube.faces["U"][2][2] == WHITE:
-                if cube.faces["U"][0][0] == WHITE:
+            if cube.faces["U"][2][0] == cube.faces["U"][2][2]:
+                if cube.faces["B"][0][0] == WHITE:
                     cube._do_moves(scramble_to_moves(OCLLS["Headlights"]))
                 else:
                     cube._do_moves(scramble_to_moves("U' " + OCLLS["Sidebars"]))
@@ -147,6 +150,7 @@ def solve_ocll(cube: Cube):
                 while cube.faces["F"][0][2] != WHITE:
                     cube.rotate("U", False, False)
                 cube._do_moves(scramble_to_moves(OCLLS["Fish"]))
+            break
         elif co_state.count(True) == 1:
             while cube.faces["U"][2][0] != WHITE:
                 cube.rotate("U", False, False)
@@ -170,7 +174,7 @@ def solve_cpll(cube: Cube):
 
 
 def solve_epll(cube: Cube):
-    if cube.faces["F"][0][1] != cube.faces["F"][0][2] and cube.faces["R"][0][1] != cube.faces["R"][0][2]:
+    if cube.faces["F"][0][1] != cube.faces["F"][0][2] or cube.faces["R"][0][1] != cube.faces["R"][0][2]:
         for i in range(4):
             if cube.faces["B"][0][0] == cube.faces["B"][0][1]:
                 while cube.faces["F"][0][0] != cube.faces["F"][0][1]:
