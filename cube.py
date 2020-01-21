@@ -33,12 +33,11 @@ class Cube:
 
     def _rotate(self, face: str, prime: bool=False, double: bool=False):
         if double:
-            self._face_rotate(face)
-            self._adjacent_face_swap(face)
-            self._face_rotate(face)
-            self._adjacent_face_swap(face)
+            for _ in range(2):
+                self._face_rotate(face)
+                self._adjacent_face_swap(face)
         elif prime:
-            for i in range(3):
+            for _ in range(3):
                 self._face_rotate(face)
                 self._adjacent_face_swap(face)
         else:
@@ -89,8 +88,7 @@ class Cube:
                  self.faces["D"], self._transpose(self.faces["L"])]
             r = [l[0][-1], l[1][0][::-1], l[2][0], l[3][-1][::-1]]
 
-            l[0][-1], l[1][0], l[2][0], l[3][-1] \
-                = r[-1:] + r[:-1]
+            l[0][-1], l[1][0], l[2][0], l[3][-1] = r[-1:] + r[:-1]
 
             self.faces["U"][-1] = l[0][-1]
             self.faces["R"] = self._transpose(l[1])
