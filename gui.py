@@ -6,8 +6,8 @@ from pygame.locals import *
 
 from cube import Cube
 from scramble_parser import scramble_to_moves
-from solver import Solution
-from scramble_generator import Scrambler
+from scramble_generator import gen_scramble
+from solver import generate_solution
 
 HEIGHT = 1200
 WIDTH = 1800
@@ -36,10 +36,10 @@ class Gui:
                         self.draw_cube()
                     elif key == "s":
                         self.cube = Cube(3)
-                        self.cube.set_scramble(Scrambler().gen_scramble())
+                        self.cube.set_scramble(gen_scramble())
                         self.draw_cube()
                     elif event.key == pygame.K_SPACE:
-                        for move in Solution(self.cube).generate_solution():
+                        for move in generate_solution(self.cube):
                             self.cube.do_moves([move])
                             self.draw_cube()
                             time.sleep(0.05)
