@@ -6,12 +6,12 @@ from pygame.locals import *
 
 from cube import Cube
 from scramble_parser import scramble_to_moves
-from beginners_method import Solution
+from solver import Solution
+from scramble_generator import Scrambler
 
 HEIGHT = 1200
 WIDTH = 1800
 CUBIE_SIZE = 100
-
 
 class Gui:
     def __init__(self, cube: Cube):
@@ -31,6 +31,9 @@ class Gui:
 
                     if key in {"u", "f", "l", "r", "d", "b"}:
                         self.cube._rotate(key.upper(), prime, False)
+                    elif key == "s":
+                        self.cube = Cube(3)
+                        self.cube.set_scramble(Scrambler().gen_scramble())
                     elif event.key == pygame.K_SPACE:
                         for move in Solution(cube).generate_solution():
                             self.cube.do_moves([move])
@@ -65,8 +68,5 @@ class Gui:
 
 if __name__ == "__main__":
     cube = Cube(3)
-    scramble = "U2 L F B R F2 B2 R U D2 F2 L2 F D2 B' R2 F' D2 F U2 B2"
-    cube.set_scramble(scramble)
-
     gui = Gui(cube)
     gui.run()
