@@ -19,6 +19,8 @@ class Gui:
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
     def run(self):
+        self.draw_cube()
+
         running = True
         while running:
             for event in pygame.event.get():
@@ -31,16 +33,16 @@ class Gui:
 
                     if key in {"u", "f", "l", "r", "d", "b"}:
                         self.cube._rotate(key.upper(), prime, False)
+                        self.draw_cube()
                     elif key == "s":
                         self.cube = Cube(3)
                         self.cube.set_scramble(Scrambler().gen_scramble())
+                        self.draw_cube()
                     elif event.key == pygame.K_SPACE:
                         for move in Solution(self.cube).generate_solution():
                             self.cube.do_moves([move])
                             self.draw_cube()
                             time.sleep(0.05)
-
-            self.draw_cube()
             
     def draw_cube(self):
         for face_num, face in enumerate(["U", "F", "D", "B", "L", "R"]):
