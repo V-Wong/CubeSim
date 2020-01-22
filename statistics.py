@@ -6,7 +6,8 @@ from openpyxl import Workbook
 from cube import Cube
 from scramble_generator import gen_scramble
 from solver import generate_solution
-from scramble_parser import moves_to_scramble
+from scramble_parser import moves_to_scramble, scramble_to_moves
+from scramble_cleaner import clean_moves
 
 
 class Statistics:
@@ -28,7 +29,8 @@ class Statistics:
             cur_cube.do_moves(scramble, save_history=False)
 
             start_time = time.clock()
-            solution = self.solver(cur_cube)
+            solution = scramble_to_moves(clean_moves(
+                                         moves_to_scramble(self.solver(cur_cube))))
             end_time = time.clock()
 
             solution_time = end_time - start_time
