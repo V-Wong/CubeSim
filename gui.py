@@ -5,9 +5,10 @@ import pygame
 from pygame.locals import *
 
 from cube import Cube
-from scramble_parser import scramble_to_moves
+from scramble_parser import scramble_to_moves, moves_to_scramble
 from scramble_generator import gen_scramble
 from solver import generate_solution
+from scramble_cleaner import clean_moves
 
 HEIGHT = 1200
 WIDTH = 1800
@@ -39,10 +40,12 @@ class Gui:
                         self.cube.set_scramble(gen_scramble())
                         self.draw_cube()
                     elif event.key == pygame.K_SPACE:
-                        for move in generate_solution(self.cube):
-                            self.cube.do_moves([move])
+                        solution = clean_moves(moves_to_scramble(
+                                               generate_solution(self.cube)))
+                        for move in solution.split():
+                            self.cube.do_moves(move)
                             self.draw_cube()
-                            time.sleep(0.05)
+                            time.sleep(0.01)
             
     def draw_cube(self):
         for face_num, face in enumerate(["U", "F", "D", "B", "L", "R"]):
