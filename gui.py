@@ -10,9 +10,10 @@ from scramble_generator import gen_scramble
 from solver import generate_solution
 from scramble_cleaner import clean_moves
 
-HEIGHT = 1200
-WIDTH = 1800
-CUBIE_SIZE = 100
+HEIGHT = 1440
+WIDTH = 2415
+CUBIE_SIZE = 125
+HORIZONTAL_START = 100
 
 class Gui:
     def __init__(self, cube: Cube):
@@ -64,7 +65,7 @@ class Gui:
                         horizontal_adjust = 0
                         
                     x = WIDTH / 3 + cubie_num * CUBIE_SIZE + horizontal_adjust
-                    y = self.cube.size * face_num * CUBIE_SIZE + row_num * CUBIE_SIZE
+                    y = self.cube.size * face_num * CUBIE_SIZE + row_num * CUBIE_SIZE + HORIZONTAL_START
                     
                     pygame.draw.rect(self.screen, cubie, (x, y, CUBIE_SIZE, CUBIE_SIZE), 0)
                     pygame.draw.rect(self.screen, (0, 0, 0), (x, y, CUBIE_SIZE, CUBIE_SIZE), 5)
