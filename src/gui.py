@@ -71,8 +71,3 @@ class Gui:
                     pygame.draw.rect(self.screen, (0, 0, 0), (x, y, CUBIE_SIZE, CUBIE_SIZE), 5)
 
         pygame.display.update()
-
-if __name__ == "__main__":
-    cube = Cube(3)
-    gui = Gui(cube)
-    gui.run()
