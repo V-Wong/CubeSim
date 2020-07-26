@@ -109,7 +109,7 @@ def solve_middle_edges(cube: Cube):
                 else:
                     moves = "U2 R' F R F' R U R'"
                 cube.do_moves(moves)
-                cube.y_rotate()
+                cube.do_moves("y")
 
                 break
 

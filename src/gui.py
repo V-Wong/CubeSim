@@ -38,7 +38,7 @@ class Gui:
                         self.draw_cube()
                     elif key == "s":
                         self.cube = Cube(3)
-                        self.cube.set_scramble(gen_scramble())
+                        self.cube.do_moves(gen_scramble(), save_history=False)
                         self.draw_cube()
                     elif event.key == pygame.K_SPACE:
                         solution = clean_moves(moves_to_scramble(
