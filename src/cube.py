@@ -48,7 +48,7 @@ class Cube:
         }[piece])
 
         self.do_moves(moves, False)
-        info = (self.faces["U"][-1][1], self.faces["F"][0][1])
+        info = self.faces["U"][-1][1], self.faces["F"][0][1]
         self._invert_moves(moves, False)
 
         return info
@@ -66,8 +66,7 @@ class Cube:
         }[piece])
 
         self.do_moves(moves, False)
-        info = (self.faces["U"][-1][-1], self.faces["F"]
-                [0][-1], self.faces["R"][0][0])
+        info = (self.faces["U"][-1][-1], self.faces["F"][0][-1], self.faces["R"][0][0])
         self._invert_moves(moves, False)
 
         return info
@@ -165,7 +164,7 @@ class Cube:
             self._adjacent_face_swap(face)
 
     def _invert_moves(self, moves: List[Tuple[str, bool, bool]], save_history: bool = True):
-        for move in moves[::-1]:
+        for move in reversed(moves):
             if save_history:
                 self.move_history.append(move)
             face, prime, double = move
@@ -174,9 +173,7 @@ class Cube:
     def _y_rotate(self, invert: bool = False):
         l = [self.faces[face] for face in ["F", "L", "B", "R"]]
 
-        self.faces["F"], self.faces["L"], \
-            self.faces["B"], self.faces["R"] \
-            = l[-1:] + l[:-1]
+        self.faces["F"], self.faces["L"], self.faces["B"], self.faces["R"] = l[-1:] + l[:-1]
 
         self._face_rotate("U")
         self._face_rotate("D")
