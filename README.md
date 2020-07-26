@@ -1,14 +1,17 @@
 # CubeSim
-A Rubik's Cube simulation program built in Python with Pygame.
-![Cover pic](https://raw.githubusercontent.com/V-Wong/CubeSim/master/cover.png)
+A Rubik's Cube simulator and solver built in Python with Pygame.
+![Cover pic](https://raw.githubusercontent.com/V-Wong/CubeSim/master/cover.webp)
+
 ## Features ##
 * 2d visualisation of Rubik's cube (2 x 2 and 3 x 3)
 * Keyboard controls for face turns
 * Parsing scramble strings and performing the scrambles on the cube
 * Generation of animated solutions based on the LBL beginner's method
+
 ## Planned Features ##
 * Generalisation up to n x n Rubiks Cubes
 * Implementation of more sophisticated and efficient Rubik's cube solving algorithms
+
 ## Implementation ##
 ### Cube ###
 This program uses a relatively simplistic representation of the Rubiks Cube. We simply consider the cube to be an array of 6 2-dimensional arrays, each representing a face of the cube. Each element of these 2-dimensional arrays then represents a sticker on the cube.
