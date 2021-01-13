@@ -1,8 +1,8 @@
 from copy import deepcopy
 
-from scramble_parser import scramble_to_moves
-from cube import Cube
-from cube import WHITE, YELLOW, GREEN, BLUE, ORANGE, RED
+from ..scramble.parser import scramble_to_moves
+from .cube import Cube
+from .cube import WHITE, YELLOW, GREEN, BLUE, ORANGE, RED
 
 
 def generate_solution(cube: Cube):

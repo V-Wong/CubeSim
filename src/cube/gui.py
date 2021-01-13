@@ -4,11 +4,11 @@ import time
 import pygame
 from pygame.locals import *
 
-from cube import Cube
-from scramble_parser import scramble_to_moves, moves_to_scramble
-from scramble_generator import gen_scramble
-from solver import generate_solution
-from scramble_cleaner import clean_moves
+from .cube import Cube
+from ..scramble.parser import scramble_to_moves, moves_to_scramble
+from ..scramble.generator import gen_scramble
+from ..scramble.cleaner import clean_moves
+from .solver import generate_solution
 
 HEIGHT = 1440
 WIDTH = 2415

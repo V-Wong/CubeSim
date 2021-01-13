@@ -1,6 +1,6 @@
 from typing import List, Tuple, Union
 
-from scramble_parser import scramble_to_moves
+from ..scramble import parser
 
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
@@ -32,7 +32,7 @@ class Cube:
         place it in UF, then analyse UF and undo the moves.
         """
 
-        moves = scramble_to_moves({
+        moves = parser.scramble_to_moves({
             "UF": "U2 U2",
             "UL": "U'",
             "UR": "U",
@@ -54,7 +54,7 @@ class Cube:
         return info
 
     def get_corner_info(self, piece: str) -> Tuple[int, int, int]:
-        moves = scramble_to_moves({
+        moves = parser.scramble_to_moves({
             "UFR": "U2 U2",
             "DFR": "R",
             "DBR": "R2",
@@ -73,7 +73,7 @@ class Cube:
 
     def do_moves(self, moves: Union[str, Tuple[int, int, int]], save_history: bool = True):
         if isinstance(moves, str):
-            moves = scramble_to_moves(moves)
+            moves = parser.scramble_to_moves(moves)
 
         for move in moves:
             if move[0] == "y":

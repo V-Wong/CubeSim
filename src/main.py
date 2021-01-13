@@ -1,6 +1,5 @@
-from gui import Gui
-from cube import Cube
-
+from .cube.cube import Cube
+from .cube.gui import Gui
 
 if __name__ == "__main__":
     cube = Cube(3)

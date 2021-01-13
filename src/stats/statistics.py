@@ -1,14 +1,13 @@
 from typing import Type, Callable
-import time
 
+from time import time
 from openpyxl import Workbook
 
-from cube import Cube
-from scramble_generator import gen_scramble
-from solver import generate_solution
-from scramble_parser import moves_to_scramble, scramble_to_moves
-from scramble_cleaner import clean_moves
-
+from ..cube.cube import Cube
+from ..cube.solver import generate_solution
+from ..scramble.generator import gen_scramble
+from ..scramble.parser import scramble_to_moves, moves_to_scramble
+from ..scramble.cleaner import clean_moves
 
 class Statistics:
     def __init__(self, cube_class: Type[Cube], scrambler: Callable, solver: Callable):
@@ -28,10 +27,10 @@ class Statistics:
             scramble = self.scrambler()
             cur_cube.do_moves(scramble, save_history=False)
 
-            start_time = time.clock()
+            start_time = time()
             solution = scramble_to_moves(clean_moves(
                                          moves_to_scramble(self.solver(cur_cube))))
-            end_time = time.clock()
+            end_time = time()
 
             solution_time = end_time - start_time
 
@@ -40,8 +39,7 @@ class Statistics:
 
         self.workbook.save("cube_statistics.xlsx")
 
-
 if __name__ == "__main__":
     stats = Statistics(Cube, gen_scramble, generate_solution)
     stats.gen_headers()
-    stats.generate_statistics(1000)
+    stats.generate_statistics(100)
