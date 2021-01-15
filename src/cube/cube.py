@@ -82,6 +82,9 @@ class Cube:
 
         return True
 
+    def clear_history(self) -> None:
+        self.move_history = []
+
     def _generate_face(self, colour: Colour, size: int):
         return [[colour for i in range(size)] for j in range(size)]
 
