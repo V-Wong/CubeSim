@@ -25,7 +25,7 @@ class HistoryCube(Cube):
             piece[0]: Colour(self.faces["U"][-1][1]),
             piece[1]: Colour(self.faces["F"][0][1])
         })
-        self._invert_moves(moves)
+        self.do_moves(parser.invert_moves(moves), False)
 
         return info
 
@@ -38,7 +38,7 @@ class HistoryCube(Cube):
             piece[1]: Colour(self.faces["F"][0][-1]),
             piece[2]: Colour(self.faces["R"][0][0])
         })
-        self._invert_moves(moves)
+        self.do_moves(parser.invert_moves(moves), False)
 
         return info
 

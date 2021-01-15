@@ -38,7 +38,7 @@ class Cube:
             piece[0]: Colour(self.faces["U"][-1][1]),
             piece[1]: Colour(self.faces["F"][0][1])
         })
-        self._invert_moves(moves)
+        parser.invert_moves(moves)
 
         return info
 
@@ -51,7 +51,7 @@ class Cube:
             piece[1]: Colour(self.faces["F"][0][-1]),
             piece[2]: Colour(self.faces["R"][0][0])
         })
-        self._invert_moves(moves)
+        parser.invert_moves(moves)
 
         return info
 
@@ -141,11 +141,6 @@ class Cube:
         for _ in range(repeats):
             self._face_rotate(move.face)
             self._adjacent_face_swap(move.face)
-
-    def _invert_moves(self, moves: List[Move]):
-        for move in reversed(moves):
-            inverted_move = Move(move.face, not move.invert, move.double)
-            self._rotate(inverted_move)
 
     def _y_rotate(self):
         l = [self.faces[face] for face in ["F", "L", "B", "R"]]

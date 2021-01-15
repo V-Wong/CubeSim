@@ -1,7 +1,7 @@
 from src.cube.cube import Cube
 from src.cube.solver import generate_solution
 from src.scramble.generator import gen_scramble
-from src.scramble.parser import scramble_to_moves
+from src.scramble.parser import scramble_to_moves, invert_moves
 
 
 def test_identity():
@@ -14,7 +14,8 @@ def test_solve_invert_moves():
         cube = Cube(3)
         scramble = gen_scramble()
         cube.do_moves(scramble)
-        cube._invert_moves(scramble_to_moves(scramble))
+        solution = invert_moves(scramble_to_moves(scramble))
+        cube.do_moves(solution)
         assert cube.is_solved()
 
 
