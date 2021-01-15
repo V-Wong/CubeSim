@@ -4,7 +4,7 @@ from copy import deepcopy
 
 from .cube import Cube
 from .move import Move
-from .cube import WHITE, YELLOW, GREEN, BLUE, ORANGE, RED
+from .colour import WHITE, YELLOW, GREEN, BLUE, ORANGE, RED
 from .history_cube import HistoryCube
 from ..scramble.parser import scramble_to_moves
 
