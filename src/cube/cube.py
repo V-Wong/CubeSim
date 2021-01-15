@@ -74,6 +74,14 @@ class Cube:
             if save_history:
                 self.move_history.append(move)
 
+    def is_solved(self) -> bool:
+        for face in self.faces.values():
+            for row in face:
+                if any(piece_colour != face[0][0] for piece_colour in row):
+                    return False
+
+        return True
+
     def _generate_face(self, colour: Colour, size: int):
         return [[colour for i in range(size)] for j in range(size)]
 
