@@ -22,7 +22,7 @@ def test_solve_arbitrary_scrambles():
     for _ in range(1):
         cube = Cube(3)
         scramble = gen_scramble()
-        cube.do_moves(scramble)
+        cube.do_moves(scramble, save_history=False)
         solution = generate_solution(cube)
         cube.do_moves(solution)
         assert cube.is_solved()
