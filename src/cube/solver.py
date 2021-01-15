@@ -6,7 +6,8 @@ from .cube import Cube
 from .move import Move
 from .colour import WHITE, YELLOW, GREEN, BLUE, ORANGE, RED
 from .history_cube import HistoryCube
-from ..scramble.parser import scramble_to_moves
+from ..scramble.cleaner import clean_moves
+from ..scramble.parser import scramble_to_moves, moves_to_scramble
 
 
 def generate_solution(cube: Cube) -> List[Move]:
@@ -20,7 +21,7 @@ def generate_solution(cube: Cube) -> List[Move]:
     solve_cpll(cube_copy)
     solve_epll(cube_copy)
 
-    return cube_copy.get_move_history()
+    return scramble_to_moves(clean_moves(moves_to_scramble(cube_copy.get_move_history())))
 
 
 def solve_cross(cube: HistoryCube):
@@ -159,7 +160,6 @@ def solve_ocll(cube: Cube):
 
     for _ in range(4):
         co_state = get_co_state(get_top_layer_corners(cube))
-        print(co_state)
 
         if co_state == [False, False, False, False]:
             while cube.get_sticker("FUR") != WHITE or cube.get_sticker("FUL") != WHITE:
