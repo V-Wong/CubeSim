@@ -1,13 +1,15 @@
 # CubeSim
 ## Overview
-A simple Rubik's Cube simulator and solver built in Python with Pygame with the following features:
-* 2d visualisation of Rubik's cube (2 x 2 and 3 x 3).
-* Keyboard controls for face turns.
-* Parsing scramble strings and performing the scrambles on the cube.
-* Generation of animated solutions based on the LBL beginner's method.
+A simple Rubik's Cube simulator and solver built in Python with Pygame for visual rendering and controls.
 
+### Features
+* Two-dimensional visualisation of a 3x3 Rubik's cube
+* Keyboard controls for face turns and rotations.
+* Generation of animated solutions based on the layer-by-layer method.
+
+### Picture of Program
 <p align="center">
-<img src="/cover.webp" width="500">
+<img src="/cover.webp" width="800">
 <p>
 
 ## Quick Start
