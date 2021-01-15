@@ -35,13 +35,13 @@ $ python3 -m src.main
 ### ``src/cube``
 This folder contains the majority of the core logic for representing the Cube and the solver.
 
-``gui.py`` - The **Gui class** which acts as the interface between the ``Cube class`` and ``Pygame``.
+``gui.py`` - The **Gui class** which acts as the interface between the **Cube class** and **Pygame**.
 
 ``cube.py`` - The **Cube class** which encapsulates all the main logic for representing a Rubik's Cube.
 
 ``history_cube.py`` - A **subclass of Cube** that has methods to record all moves applied.
 
-``solver.py`` - The ``solving functions`` that generate solutions given an instance of a ``Cube``.
+``solver.py`` - The **solving functions** that generate solutions given an instance of a **Cube**.
 
 ``move.py`` - A simple **Move dataclass** to encapsulate information about specific moves.
 
@@ -49,6 +49,19 @@ This folder contains the majority of the core logic for representing the Cube an
 
 ``colour.py`` - A simple **Colour type definition** to wrap around RGB colour tuples.
 
+### ``src/scramble``
+
+``generator.py`` - A simple **scramble generation function** that randomly selects moves to produce a scramble.
+
+``parser.py`` - A set of **parsing functions** to convert between moves of **str** type and **Move** type.
+
+### ``src/stats``
+
+``statistics.py`` - A simple **Statistics class** that generates scrambles and solutions while recording movecounts in a spreadsheet.
+
+### ``tests``
+``test_cube.py`` - A **set of tests** to ensure data invariants for the cube are maintained and to test the **solving functions**.
+ 
 ## Implementation ##
 ### Cube ###
 This program uses a relatively simplistic representation of the Rubiks Cube. We simply consider the cube to be an array of 6 2-dimensional arrays, each representing a face of the cube. Each element of these 2-dimensional arrays then represents a sticker on the cube.
