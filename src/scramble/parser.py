@@ -1,26 +1,28 @@
 from typing import List, Tuple
 
+from ..cube.move import Move
 
-def scramble_to_moves(scramble: str) -> List[Tuple[int, bool, bool]]:
+
+def scramble_to_moves(scramble: str) -> List[Move]:
     moves = []
 
     for move in scramble.split():
         is_prime = "'" in move
         is_double = "2" in move
-        moves.append((move[0], is_prime, is_double))
+        moves.append(Move(move[0], is_prime, is_double))
 
     return moves
 
 
-def moves_to_scramble(moves: List[Tuple[int, bool, bool]]) -> str:
+def moves_to_scramble(moves: List[Move]) -> str:
     scramble = []
 
     for move in moves:
-        cur_move = move[0]
+        cur_move = move.face
         
-        if move[2]:
+        if move.double:
             cur_move += "2"
-        elif move[1]:
+        elif move.invert:
             cur_move += "'"
 
         scramble.append(cur_move)

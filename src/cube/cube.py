@@ -1,13 +1,8 @@
-from typing import List, Tuple, Union
+from typing import List, Tuple, TypeVar, Union
 
-from scramble_parser import scramble_to_moves
-
-WHITE = (255, 255, 255)
-GREEN = (0, 255, 0)
-ORANGE = (255, 165, 0)
-YELLOW = (255, 255, 0)
-BLUE = (0, 0, 255)
-RED = (255, 0, 0)
+from .move import Move
+from .colour import Colour, WHITE, GREEN, ORANGE, BLUE, RED, YELLOW
+from ..scramble import parser
 
 
 class Cube:
@@ -26,13 +21,8 @@ class Cube:
         self.scramble = None
         self.move_history = []
 
-    def get_edge_info(self, piece: str) -> Tuple[int, int]:
-        """
-        We can information about an edge by doing moves to
-        place it in UF, then analyse UF and undo the moves.
-        """
-
-        moves = scramble_to_moves({
+    def get_edge_info(self, piece: str) -> Tuple[Colour, Colour]:
+        moves = parser.scramble_to_moves({
             "UF": "U2 U2",
             "UL": "U'",
             "UR": "U",
@@ -48,13 +38,13 @@ class Cube:
         }[piece])
 
         self.do_moves(moves, False)
-        info = self.faces["U"][-1][1], self.faces["F"][0][1]
+        info = Colour(self.faces["U"][-1][1]), Colour(self.faces["F"][0][1])
         self._invert_moves(moves, False)
 
         return info
 
-    def get_corner_info(self, piece: str) -> Tuple[int, int, int]:
-        moves = scramble_to_moves({
+    def get_corner_info(self, piece: str) -> Tuple[Colour, Colour, Colour]:
+        moves = parser.scramble_to_moves({
             "UFR": "U2 U2",
             "DFR": "R",
             "DBR": "R2",
@@ -66,32 +56,40 @@ class Cube:
         }[piece])
 
         self.do_moves(moves, False)
-        info = (self.faces["U"][-1][-1], self.faces["F"][0][-1], self.faces["R"][0][0])
+        info = Colour(self.faces["U"][-1][-1]), Colour(self.faces["F"][0][-1]), Colour(self.faces["R"][0][0])
         self._invert_moves(moves, False)
 
         return info
 
-    def do_moves(self, moves: Union[str, Tuple[int, int, int]], save_history: bool = True):
+    def do_moves(self, moves: Union[str, List[Move]], save_history: bool = True):
         if isinstance(moves, str):
-            moves = scramble_to_moves(moves)
+            moves = parser.scramble_to_moves(moves)
 
         for move in moves:
-            if move[0] == "y":
+            if move.face == "y":
                 self._y_rotate()
             else:
-                self._rotate(*move)
+                self._rotate(move)
 
             if save_history:
                 self.move_history.append(move)
 
-    def _generate_face(self, colour: str, size: int):
+    def is_solved(self) -> bool:
+        for face in self.faces.values():
+            for row in face:
+                if any(piece_colour != face[0][0] for piece_colour in row):
+                    return False
+
+        return True
+
+    def clear_history(self) -> None:
+        self.move_history = []
+
+    def _generate_face(self, colour: Colour, size: int):
         return [[colour for i in range(size)] for j in range(size)]
 
     def _face_rotate(self, face: str):
         self.faces[face] = [list(row) for row in zip(*self.faces[face][::-1])]
-
-    def _transpose(self, l: List[int]) -> List[int]:
-        return [list(i) for i in zip(*l)]
 
     def _adjacent_face_swap(self, face: str):
         if face == "U":
@@ -107,68 +105,68 @@ class Cube:
                 self.faces["B"][-1], self.faces["R"][-1] = l[1:] + l[:1]
 
         elif face == "R":
-            l = [self._transpose(l) for l in
+            l = [_transpose(l) for l in
                  [self.faces[face] for face in ["U", "B", "D", "F"]]]
             r = [l[0][-1][::-1], l[1][0][::-1], l[2][-1], l[3][-1]]
 
             l[0][-1], l[1][0], l[2][-1], l[3][-1] = r[-1:] + r[:-1]
 
             for i, face in enumerate(["U", "B", "D", "F"]):
-                self.faces[face] = self._transpose(l[i])
+                self.faces[face] = _transpose(l[i])
 
         elif face == "L":
-            l = [self._transpose(l) for l in
+            l = [_transpose(l) for l in
                  [self.faces[face] for face in ["U", "F", "D", "B"]]]
             r = [l[0][0], l[1][0], l[2][0][::-1], l[3][-1][::-1]]
 
             l[0][0], l[1][0], l[2][0], l[3][-1] = r[-1:] + r[:-1]
 
             for i, face in enumerate(["U", "F", "D", "B"]):
-                self.faces[face] = self._transpose(l[i])
+                self.faces[face] = _transpose(l[i])
 
         elif face == "F":
-            l = [self.faces["U"], self._transpose(self.faces["R"]),
-                 self.faces["D"], self._transpose(self.faces["L"])]
+            l = [self.faces["U"], _transpose(self.faces["R"]),
+                 self.faces["D"], _transpose(self.faces["L"])]
             r = [l[0][-1], l[1][0][::-1], l[2][0], l[3][-1][::-1]]
 
             l[0][-1], l[1][0], l[2][0], l[3][-1] = r[-1:] + r[:-1]
 
             self.faces["U"][-1] = l[0][-1]
-            self.faces["R"] = self._transpose(l[1])
+            self.faces["R"] = _transpose(l[1])
             self.faces["D"][0] = l[2][0]
-            self.faces["L"] = self._transpose(l[3])
+            self.faces["L"] = _transpose(l[3])
 
         elif face == "B":
-            l = [self.faces["U"], self._transpose(self.faces["R"]),
-                 self.faces["D"], self._transpose(self.faces["L"])]
+            l = [self.faces["U"], _transpose(self.faces["R"]),
+                 self.faces["D"], _transpose(self.faces["L"])]
             r = [l[0][0][::-1], l[1][-1], l[2][-1][::-1], l[3][0]]
 
             l[0][0], l[1][-1], l[2][-1], l[3][0] = r[1:] + r[:1]
 
             self.faces["U"][0] = l[0][0]
-            self.faces["R"] = self._transpose(l[1])
+            self.faces["R"] = _transpose(l[1])
             self.faces["D"][-1] = l[2][-1]
-            self.faces["L"] = self._transpose(l[3])
+            self.faces["L"] = _transpose(l[3])
 
-    def _rotate(self, face: str, prime: bool = False, double: bool = False):
-        if double:
+    def _rotate(self, move: Move):
+        if move.double:
             for _ in range(2):
-                self._face_rotate(face)
-                self._adjacent_face_swap(face)
-        elif prime:
+                self._face_rotate(move.face)
+                self._adjacent_face_swap(move.face)
+        elif move.invert:
             for _ in range(3):
-                self._face_rotate(face)
-                self._adjacent_face_swap(face)
+                self._face_rotate(move.face)
+                self._adjacent_face_swap(move.face)
         else:
-            self._face_rotate(face)
-            self._adjacent_face_swap(face)
+            self._face_rotate(move.face)
+            self._adjacent_face_swap(move.face)
 
-    def _invert_moves(self, moves: List[Tuple[str, bool, bool]], save_history: bool = True):
+    def _invert_moves(self, moves: List[Move], save_history: bool = True):
         for move in reversed(moves):
             if save_history:
                 self.move_history.append(move)
-            face, prime, double = move
-            self._rotate(face, not prime, double)
+            inverted_move = Move(move.face, not move.invert, move.double)
+            self._rotate(inverted_move)
 
     def _y_rotate(self, invert: bool = False):
         l = [self.faces[face] for face in ["F", "L", "B", "R"]]
@@ -180,4 +178,8 @@ class Cube:
         self._face_rotate("D")
         self._face_rotate("D")
 
-        self.move_history.append(("y", False, False))
+        self.move_history.append(Move("y", False, False))
+
+T = TypeVar("T")
+def _transpose(l: List[List[T]]) -> List[List[T]]:
+    return [list(i) for i in zip(*l)]

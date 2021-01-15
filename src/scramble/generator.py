@@ -1,8 +1,9 @@
-from pprint import pprint
+from typing import List
+
 import random
 
 
-def gen_n_scrambles(n: int):
+def gen_n_scrambles(n: int) -> List[str]:
     scrambles = []
 
     for _ in range(n):
@@ -11,7 +12,7 @@ def gen_n_scrambles(n: int):
     return scrambles
 
 
-def gen_scramble():
+def gen_scramble() -> str:
     moves = ["U", "R", "L", "B", "D", "F"]
 
     scramble = []

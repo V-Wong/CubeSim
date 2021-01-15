@@ -1,11 +1,14 @@
+from typing import List
+
 from copy import deepcopy
 
-from scramble_parser import scramble_to_moves
-from cube import Cube
-from cube import WHITE, YELLOW, GREEN, BLUE, ORANGE, RED
+from .cube import Cube
+from .move import Move
+from .cube import WHITE, YELLOW, GREEN, BLUE, ORANGE, RED
+from ..scramble.parser import scramble_to_moves
 
 
-def generate_solution(cube: Cube):
+def generate_solution(cube: Cube) -> List[Move]:
     cube_copy = deepcopy(cube)
 
     solve_cross(cube_copy)
@@ -37,8 +40,7 @@ def solve_cross(cube: Cube):
 
     for colour in [BLUE, ORANGE, GREEN, RED]:
         for edge in EDGES:
-            if (cube.get_edge_info(edge) == (colour, YELLOW)
-                    or cube.get_edge_info(edge) == (YELLOW, colour)):
+            if cube.get_edge_info(edge) == (colour, YELLOW) or cube.get_edge_info(edge) == (YELLOW, colour):
                 cube.do_moves(EDGES[edge])
 
                 if cube.get_edge_info("UF")[0] == YELLOW:
@@ -72,11 +74,12 @@ def solve_corners(cube: Cube):
             if (colour1 in cur_corner and colour2 in cur_corner and YELLOW in cur_corner):
                 cube.do_moves(CORNERS[corner])
                 cur_corner = cube.get_corner_info("UFR")
+
                 if cur_corner[0] == YELLOW:
                     moves = "U R U2 R' U R U' R'"
                 elif cur_corner[1] == YELLOW:
                     moves = "U R U' R'"
-                elif cur_corner[2] == YELLOW:
+                else:
                     moves = "R U R'"
                 
                 cube.do_moves(moves)
@@ -100,8 +103,7 @@ def solve_middle_edges(cube: Cube):
     for colour1, colour2 in [(GREEN, RED), (RED, BLUE), (BLUE, ORANGE), (ORANGE, GREEN)]:
         for edge in EDGES:
             cur_edge = cube.get_edge_info(edge)
-            if (cur_edge == (colour1, colour2)
-                    or cur_edge == (colour2, colour1)):
+            if cur_edge == (colour1, colour2) or cur_edge == (colour2, colour1):
                 cube.do_moves(EDGES[edge])
                 cur_edge = cube.get_edge_info("UF")
                 if cur_edge[1] == colour1:
