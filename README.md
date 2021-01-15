@@ -36,37 +36,26 @@ $ python3 -m src.main
 ## Project Structure
 ### ``src/cube``
 This folder contains the majority of the core logic for representing the Cube and the solver.
-
-``gui.py`` - The **Gui class** which acts as the interface between the **Cube class** and **Pygame**.
-
-``cube.py`` - The **Cube class** which encapsulates all the main logic for representing a Rubik's Cube.
-
-``history_cube.py`` - A **subclass of Cube** that has methods to record all moves applied.
-
-``solver.py`` - The **solving functions** that generate solutions given an instance of a **Cube**.
-
-``move.py`` - A simple **Move dataclass** to encapsulate information about specific moves.
-
-``pieces.py`` - Simple **Edge and Corner dataclasses** to encapsulate information about pieces.
-
-``colour.py`` - A simple **Colour type definition** to wrap around RGB colour tuples.
+- ``gui.py`` - The **Gui class** which acts as the interface between the **Cube class** and **Pygame**.
+- ``cube.py`` - The **Cube class** which encapsulates all the main logic for representing a Rubik's Cube.
+- ``history_cube.py`` - A **subclass of Cube** that has methods to record all moves applied.
+- ``solver.py`` - The **solving functions** that generate solutions given an instance of a **Cube**.
+- ``move.py`` - A simple **Move dataclass** to encapsulate information about specific moves.
+- ``pieces.py`` - Simple **Edge and Corner dataclasses** to encapsulate information about pieces.
+- ``colour.py`` - A simple **Colour type definition** to wrap around RGB colour tuples.
 
 ### ``src/scramble``
 This folder contains any logic regarding scramble generation and scramble parsing.
-
-``generator.py`` - A simple **scramble generation function** that randomly selects moves to produce a scramble.
-
-``parser.py`` - A set of **parsing functions** to convert between moves of **str** type and **Move** type.
+- ``generator.py`` - A simple **scramble generation function** that randomly selects moves to produce a scramble.
+- ``parser.py`` - A set of **parsing functions** to convert between moves of **str** type and **Move** type.
 
 ### ``src/stats``
 This folder contains a set of statistical analysis functions to analyse the solver.
-
-``statistics.py`` - A simple **Statistics class** that generates scrambles and solutions while recording movecounts in a spreadsheet.
+- ``statistics.py`` - A simple **Statistics class** that generates scrambles and solutions while recording movecounts in a spreadsheet.
 
 ### ``tests``
 This folders contains the tests which can be run using ``python3 -m pytest``.
-
-``test_cube.py`` - A **set of tests** to ensure data invariants for the cube are maintained and to test the **solving functions**.
+- ``test_cube.py`` - A **set of tests** to ensure data invariants for the cube are maintained and to test the **solving functions**.
  
 ## Implementation ##
 ### Cube ###
