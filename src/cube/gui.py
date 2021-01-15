@@ -46,7 +46,7 @@ class Gui:
                         for move in solution.split():
                             self.cube.do_moves(move)
                             self.draw_cube()
-                            time.sleep(0.01)
+                            # time.sleep(0.01)
 
                         self.cube.clear_history()
             

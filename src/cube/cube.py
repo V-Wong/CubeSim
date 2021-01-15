@@ -1,7 +1,9 @@
 from typing import List, Tuple, TypeVar, Union
 
+
 from .move import Move
 from .colour import Colour, WHITE, GREEN, ORANGE, BLUE, RED, YELLOW
+from .pieces import Corner, Edge
 from ..scramble import parser
 
 
@@ -21,7 +23,7 @@ class Cube:
         self.scramble = None
         self.move_history = []
 
-    def get_edge_info(self, piece: str) -> Tuple[Colour, Colour]:
+    def get_edge(self, piece: str) -> Edge:
         moves = parser.scramble_to_moves({
             "UF": "U2 U2",
             "UL": "U'",
@@ -38,25 +40,32 @@ class Cube:
         }[piece])
 
         self.do_moves(moves, False)
-        info = Colour(self.faces["U"][-1][1]), Colour(self.faces["F"][0][1])
+        info = Edge({
+            piece[0]: Colour(self.faces["U"][-1][1]),
+            piece[1]: Colour(self.faces["F"][0][1])
+        })
         self._invert_moves(moves, False)
 
         return info
 
-    def get_corner_info(self, piece: str) -> Tuple[Colour, Colour, Colour]:
+    def get_corner(self, piece: str) -> Corner:
         moves = parser.scramble_to_moves({
             "UFR": "U2 U2",
             "DFR": "R",
             "DBR": "R2",
-            "UBR": "R'",
-            "UFL": "U'",
+            "URB": "U",
+            "ULF": "U'",
             "UBL": "U2",
             "DFL": "L' U'",
             "DBL": "L2 U'"
         }[piece])
 
         self.do_moves(moves, False)
-        info = Colour(self.faces["U"][-1][-1]), Colour(self.faces["F"][0][-1]), Colour(self.faces["R"][0][0])
+        info = Corner({
+            piece[0]: Colour(self.faces["U"][-1][-1]), 
+            piece[1]: Colour(self.faces["F"][0][-1]),
+            piece[2]: Colour(self.faces["R"][0][0])
+        })
         self._invert_moves(moves, False)
 
         return info

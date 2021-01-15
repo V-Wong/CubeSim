@@ -40,10 +40,12 @@ def solve_cross(cube: Cube):
 
     for colour in [BLUE, ORANGE, GREEN, RED]:
         for edge in EDGES:
-            if cube.get_edge_info(edge) == (colour, YELLOW) or cube.get_edge_info(edge) == (YELLOW, colour):
+            cur_edge = tuple(cube.get_edge(edge).values())
+
+            if cur_edge in [(colour, YELLOW), (YELLOW, colour)]:
                 cube.do_moves(EDGES[edge])
 
-                if cube.get_edge_info("UF")[0] == YELLOW:
+                if cube.get_edge("UF")["U"] == YELLOW:
                     cube.do_moves("F2")
                 else:
                     cube.do_moves("R U' R' F")
@@ -60,24 +62,25 @@ def solve_corners(cube: Cube):
         "UFR": "U2 U2",
         "DFR": "R U R' U'",
         "DBR": "R' U R U",
-        "UBR": "U",
-        "UFL": "U'",
+        "URB": "U",
+        "ULF": "U'",
         "UBL": "U2",
         "DFL": "L' U' L",
         "DBL": "L U L' U" 
     }
 
     for colour1, colour2 in [(GREEN, RED), (BLUE, RED), 
-                            (BLUE, ORANGE), (GREEN, ORANGE)]:
+                             (BLUE, ORANGE), (GREEN, ORANGE)]:
         for corner in CORNERS:
-            cur_corner = cube.get_corner_info(corner)
-            if (colour1 in cur_corner and colour2 in cur_corner and YELLOW in cur_corner):
-                cube.do_moves(CORNERS[corner])
-                cur_corner = cube.get_corner_info("UFR")
+            cur_corner = cube.get_corner(corner).values()
 
-                if cur_corner[0] == YELLOW:
+            if colour1 in cur_corner and colour2 in cur_corner and YELLOW in cur_corner:
+                cube.do_moves(CORNERS[corner])
+                cur_corner = cube.get_corner("UFR")
+
+                if cur_corner["U"] == YELLOW:
                     moves = "U R U2 R' U R U' R'"
-                elif cur_corner[1] == YELLOW:
+                elif cur_corner["F"] == YELLOW:
                     moves = "U R U' R'"
                 else:
                     moves = "R U R'"
@@ -102,24 +105,25 @@ def solve_middle_edges(cube: Cube):
 
     for colour1, colour2 in [(GREEN, RED), (RED, BLUE), (BLUE, ORANGE), (ORANGE, GREEN)]:
         for edge in EDGES:
-            cur_edge = cube.get_edge_info(edge)
+            cur_edge = tuple(cube.get_edge(edge).values())
+
             if cur_edge == (colour1, colour2) or cur_edge == (colour2, colour1):
                 cube.do_moves(EDGES[edge])
-                cur_edge = cube.get_edge_info("UF")
-                if cur_edge[1] == colour1:
+                cur_edge = cube.get_edge("UF")
+                if cur_edge["F"] == colour1:
                     moves = "U R U' R' F R' F' R"
                 else:
                     moves = "U2 R' F R F' R U R'"
                 cube.do_moves(moves)
-                cube.do_moves("y")
+                cube.do_moves("y", False)
 
                 break
 
 
 def solve_eoll(cube: Cube):
     for _ in range(4):
-        top_layer = [cube.faces["U"][0][1], cube.faces["U"][1][2], 
-                    cube.faces["U"][2][1], cube.faces["U"][1][0]]
+        top_layer = [cube.get_edge("UB")["U"], cube.get_edge("UR")["U"],
+                     cube.get_edge("UF")["U"], cube.get_edge("UL")["U"]]
         eo_state = [face == WHITE for face in top_layer]
 
         if eo_state == [False, False, False, False]:
@@ -139,53 +143,62 @@ def solve_ocll(cube: Cube):
     OCLLS = {
         "S": "R U R' U R U2 R' U",
         "AS": "U R' U' R U' R' U2 R",
+        "H": "F R U R' U' R U R' U' R U R' U' F'",
         "Headlights": "R2 D' R U2 R' D R U2 R",
         "Sidebars": "U' L F R' F' L' F R F'",
-        "Fish": "U' R' F R B' R' F' R B"
+        "Fish": "R' U2 R' D' R U2 R' D R2",
+        "Pi": "U R U2 R2 U' R2 U' R2 U2 R"
     }
 
+    def get_top_layer_corners(cube: Cube):
+        return [cube.get_corner("UBL")["U"], cube.get_corner("URB")["U"],
+                cube.get_corner("UFR")["U"], cube.get_corner("ULF")["U"]]
+
+    def get_co_state(top_layer):
+        return [face == WHITE for face in top_layer]
+
     for _ in range(4):
-        top_layer = [cube.faces["U"][0][0], cube.faces["U"][0][2], 
-                    cube.faces["U"][2][0], cube.faces["U"][2][2]]
-        co_state = [face == WHITE for face in top_layer]
+        co_state = get_co_state(get_top_layer_corners(cube))
+        print(co_state)
 
-        # For 0 oriented corners case, we can do sunes to generate
-        # 1 or 2 oriented corner cases
-        while co_state.count(True) == 0:
-            cube.do_moves(OCLLS["S"])
-            top_layer = [cube.faces["U"][0][0], cube.faces["U"][0][2], 
-                        cube.faces["U"][2][0], cube.faces["U"][2][2]]
-            co_state = [face == WHITE for face in top_layer]
-
-        if co_state.count(True) == 2:
-            while ((cube.faces["U"][2][0] != cube.faces["U"][2][2])
-                    and cube.faces["U"][2][0] != cube.faces["U"][0][2]):
+        if co_state == [False, False, False, False]:
+            while cube.get_corner("UFR")["F"] != WHITE or cube.get_corner("ULF")["F"] != WHITE:
                 cube.do_moves("U")
-            if cube.faces["U"][2][0] == cube.faces["U"][2][2]:
-                if cube.faces["B"][0][0] == WHITE:
-                    cube.do_moves(OCLLS["Headlights"])
-                else:
-                    cube.do_moves(OCLLS["Sidebars"])
+
+            if cube.get_corner("UFR")["F"] == cube.get_corner("UBL")["B"]: 
+                cube.do_moves(OCLLS["H"])
             else:
-                while cube.faces["F"][0][2] != WHITE:
-                    cube.do_moves("U")
-                cube.do_moves(OCLLS["Fish"])
+                cube.do_moves(OCLLS["Pi"])
             break
-        elif co_state.count(True) == 1:
-            while cube.faces["U"][2][0] != WHITE:
-                cube.do_moves("U")
-            if cube.get_corner_info("UFR")[1] == WHITE:
+        elif co_state == [False, False, False, True]:
+            if cube.get_corner("UFR")["F"] == WHITE:
                 cube.do_moves(OCLLS["S"])
             else:
                 cube.do_moves(OCLLS["AS"])
             break
+        elif co_state == [False, False, True, True]:
+            if cube.get_corner("URB")["B"] == WHITE:
+                cube.do_moves(OCLLS["Headlights"])
+            else:
+                cube.do_moves(OCLLS["Sidebars"])
+            break
+        elif co_state == [False, True, False, True]:
+            if cube.get_corner("UFR")["R"] != WHITE:
+                cube.do_moves("U2")
+            cube.do_moves(OCLLS["Fish"])
+            break
+        else:
+            cube.do_moves("U")
 
 
 def solve_cpll(cube: Cube):
     alg = "R' U L' U2 R U' R' U2 R L "
 
     for _ in range(4):
-        if cube.faces["F"][0][0] == cube.faces["F"][0][2]:
+        if cube.get_corner("UFR")["F"] == cube.get_corner("ULF")["F"] and cube.get_corner("UBL")["B"] == cube.get_corner("URB")["B"]:
+            break
+
+        if cube.get_corner("UFR")["F"] == cube.get_corner("ULF")["F"]:
             cube.do_moves(alg)
             break
         cube.do_moves("U")
@@ -194,21 +207,24 @@ def solve_cpll(cube: Cube):
 
 
 def solve_epll(cube: Cube):
-    if cube.faces["F"][0][1] != cube.faces["F"][0][2] or cube.faces["R"][0][1] != cube.faces["R"][0][2]:
-        for _ in range(4):
-            if cube.faces["B"][0][0] == cube.faces["B"][0][1]:
-                while cube.faces["F"][0][0] != cube.faces["F"][0][1]:
-                    cube.do_moves("R U' R U R U R U' R' U' R2")
-                break
-            cube.do_moves("U")
-        else:
-            for _ in range(4):
-                cube.do_moves("R U' R U R U R U' R' U' R2")
-                if cube.faces["B"][0][0] == cube.faces["B"][0][1]:
-                    while cube.faces["F"][0][0] != cube.faces["F"][0][1]:
-                        cube.do_moves("R U' R U R U R U' R' U' R2")
-                    break
-            cube.do_moves("U")
-        
-    while cube.faces["F"][0][1] != cube.faces["F"][1][1]:
+    solved_edges = 0
+
+    for _ in range(4):
+        if cube.get_edge("UF")["F"] == cube.get_corner("UFR")["F"]:
+            solved_edges += 1
         cube.do_moves("U")
+
+    if solved_edges != 4:
+        if solved_edges == 0:
+            cube.do_moves("R U' R U R U R U' R' U' R2")
+
+        while cube.get_edge("UF")["F"] != cube.get_corner("UFR")["F"]:
+            cube.do_moves("U")
+
+        cube.do_moves("U2")
+
+        while cube.get_edge("UF")["F"] != cube.get_corner("UFR")["F"]:
+            cube.do_moves("R U' R U R U R U' R' U' R2")
+
+    while cube.get_edge("UF")["F"] != cube.get_edge("RF")["F"]:
+        cube.do_moves("U") 
