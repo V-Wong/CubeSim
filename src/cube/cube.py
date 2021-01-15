@@ -1,4 +1,4 @@
-from typing import List, Tuple, Union
+from typing import List, Tuple, TypeVar, Union
 
 from .colour import Colour, WHITE, GREEN, ORANGE, BLUE, RED, YELLOW
 from ..scramble import parser
@@ -84,9 +84,6 @@ class Cube:
     def _face_rotate(self, face: str):
         self.faces[face] = [list(row) for row in zip(*self.faces[face][::-1])]
 
-    def _transpose(self, l: List[int]) -> List[int]:
-        return [list(i) for i in zip(*l)]
-
     def _adjacent_face_swap(self, face: str):
         if face == "U":
             l = [self.faces[face][0] for face in ["F", "L", "B", "R"]]
@@ -101,48 +98,48 @@ class Cube:
                 self.faces["B"][-1], self.faces["R"][-1] = l[1:] + l[:1]
 
         elif face == "R":
-            l = [self._transpose(l) for l in
+            l = [_transpose(l) for l in
                  [self.faces[face] for face in ["U", "B", "D", "F"]]]
             r = [l[0][-1][::-1], l[1][0][::-1], l[2][-1], l[3][-1]]
 
             l[0][-1], l[1][0], l[2][-1], l[3][-1] = r[-1:] + r[:-1]
 
             for i, face in enumerate(["U", "B", "D", "F"]):
-                self.faces[face] = self._transpose(l[i])
+                self.faces[face] = _transpose(l[i])
 
         elif face == "L":
-            l = [self._transpose(l) for l in
+            l = [_transpose(l) for l in
                  [self.faces[face] for face in ["U", "F", "D", "B"]]]
             r = [l[0][0], l[1][0], l[2][0][::-1], l[3][-1][::-1]]
 
             l[0][0], l[1][0], l[2][0], l[3][-1] = r[-1:] + r[:-1]
 
             for i, face in enumerate(["U", "F", "D", "B"]):
-                self.faces[face] = self._transpose(l[i])
+                self.faces[face] = _transpose(l[i])
 
         elif face == "F":
-            l = [self.faces["U"], self._transpose(self.faces["R"]),
-                 self.faces["D"], self._transpose(self.faces["L"])]
+            l = [self.faces["U"], _transpose(self.faces["R"]),
+                 self.faces["D"], _transpose(self.faces["L"])]
             r = [l[0][-1], l[1][0][::-1], l[2][0], l[3][-1][::-1]]
 
             l[0][-1], l[1][0], l[2][0], l[3][-1] = r[-1:] + r[:-1]
 
             self.faces["U"][-1] = l[0][-1]
-            self.faces["R"] = self._transpose(l[1])
+            self.faces["R"] = _transpose(l[1])
             self.faces["D"][0] = l[2][0]
-            self.faces["L"] = self._transpose(l[3])
+            self.faces["L"] = _transpose(l[3])
 
         elif face == "B":
-            l = [self.faces["U"], self._transpose(self.faces["R"]),
-                 self.faces["D"], self._transpose(self.faces["L"])]
+            l = [self.faces["U"], _transpose(self.faces["R"]),
+                 self.faces["D"], _transpose(self.faces["L"])]
             r = [l[0][0][::-1], l[1][-1], l[2][-1][::-1], l[3][0]]
 
             l[0][0], l[1][-1], l[2][-1], l[3][0] = r[1:] + r[:1]
 
             self.faces["U"][0] = l[0][0]
-            self.faces["R"] = self._transpose(l[1])
+            self.faces["R"] = _transpose(l[1])
             self.faces["D"][-1] = l[2][-1]
-            self.faces["L"] = self._transpose(l[3])
+            self.faces["L"] = _transpose(l[3])
 
     def _rotate(self, face: str, prime: bool = False, double: bool = False):
         if double:
@@ -175,3 +172,7 @@ class Cube:
         self._face_rotate("D")
 
         self.move_history.append(("y", False, False))
+
+T = TypeVar("T")
+def _transpose(l: List[List[T]]) -> List[List[T]]:
+    return [list(i) for i in zip(*l)]
