@@ -50,16 +50,20 @@ This folder contains the majority of the core logic for representing the Cube an
 ``colour.py`` - A simple **Colour type definition** to wrap around RGB colour tuples.
 
 ### ``src/scramble``
+This folder contains any logic regarding scramble generation and scramble parsing.
 
 ``generator.py`` - A simple **scramble generation function** that randomly selects moves to produce a scramble.
 
 ``parser.py`` - A set of **parsing functions** to convert between moves of **str** type and **Move** type.
 
 ### ``src/stats``
+This folder contains a set of statistical analysis functions to analyse the solver.
 
 ``statistics.py`` - A simple **Statistics class** that generates scrambles and solutions while recording movecounts in a spreadsheet.
 
 ### ``tests``
+This folders contains the tests which can be run using ``python3 -m pytest``.
+
 ``test_cube.py`` - A **set of tests** to ensure data invariants for the cube are maintained and to test the **solving functions**.
  
 ## Implementation ##
