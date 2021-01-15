@@ -39,7 +39,7 @@ class Gui:
                         self.draw_cube()
                     elif key == "s":
                         self.cube = Cube(3)
-                        self.cube.do_moves(gen_scramble(), save_history=False)
+                        self.cube.do_moves(gen_scramble())
                         self.draw_cube()
                     elif event.key == pygame.K_SPACE:
                         solution = moves_to_scramble(generate_solution(self.cube))
@@ -47,8 +47,6 @@ class Gui:
                             self.cube.do_moves(move)
                             self.draw_cube()
                             # time.sleep(0.01)
-
-                        self.cube.clear_history()
             
     def draw_cube(self):
         for face_num, face in enumerate(["U", "F", "D", "B", "L", "R"]):

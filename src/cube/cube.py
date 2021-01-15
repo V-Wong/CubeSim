@@ -10,8 +10,6 @@ from ..scramble import parser
 
 class Cube:
     def __init__(self, size: int):
-        self.size = size
-
         self.faces = {
             "U": self._generate_face(WHITE, size),
             "F": self._generate_face(GREEN, size),
@@ -20,9 +18,6 @@ class Cube:
             "R": self._generate_face(RED, size),
             "D": self._generate_face(YELLOW, size),
         }
-
-        self.scramble = None
-        self.move_history = []
 
     def get_sticker(self, sticker: str) -> Colour:
         for perm in permutations(sticker):
@@ -36,29 +31,29 @@ class Cube:
     def get_edge(self, piece: str) -> Edge:
         moves = parser.scramble_to_moves(EDGE_TO_UF[piece])
 
-        self.do_moves(moves, False)
+        self.do_moves(moves)
         info = Edge({
             piece[0]: Colour(self.faces["U"][-1][1]),
             piece[1]: Colour(self.faces["F"][0][1])
         })
-        self._invert_moves(moves, False)
+        self._invert_moves(moves)
 
         return info
 
     def get_corner(self, piece: str) -> Corner:
         moves = parser.scramble_to_moves(CORNER_TO_UFR[piece])
 
-        self.do_moves(moves, False)
+        self.do_moves(moves)
         info = Corner({
             piece[0]: Colour(self.faces["U"][-1][-1]), 
             piece[1]: Colour(self.faces["F"][0][-1]),
             piece[2]: Colour(self.faces["R"][0][0])
         })
-        self._invert_moves(moves, False)
+        self._invert_moves(moves)
 
         return info
 
-    def do_moves(self, moves: Union[str, List[Move]], save_history: bool = True):
+    def do_moves(self, moves: Union[str, List[Move]]):
         if isinstance(moves, str):
             moves = parser.scramble_to_moves(moves)
 
@@ -68,9 +63,6 @@ class Cube:
             else:
                 self._rotate(move)
 
-            if save_history:
-                self.move_history.append(move)
-
     def is_solved(self) -> bool:
         for face in self.faces.values():
             for row in face:
@@ -78,9 +70,6 @@ class Cube:
                     return False
 
         return True
-
-    def clear_history(self) -> None:
-        self.move_history = []
 
     def _generate_face(self, colour: Colour, size: int):
         return [[colour for i in range(size)] for j in range(size)]
@@ -158,14 +147,12 @@ class Cube:
             self._face_rotate(move.face)
             self._adjacent_face_swap(move.face)
 
-    def _invert_moves(self, moves: List[Move], save_history: bool = True):
+    def _invert_moves(self, moves: List[Move]):
         for move in reversed(moves):
-            if save_history:
-                self.move_history.append(move)
             inverted_move = Move(move.face, not move.invert, move.double)
             self._rotate(inverted_move)
 
-    def _y_rotate(self, invert: bool = False):
+    def _y_rotate(self, invert: bool=False):
         l = [self.faces[face] for face in ["F", "L", "B", "R"]]
 
         self.faces["F"], self.faces["L"], self.faces["B"], self.faces["R"] = l[-1:] + l[:-1]
@@ -174,8 +161,6 @@ class Cube:
         self._face_rotate("D")
         self._face_rotate("D")
         self._face_rotate("D")
-
-        self.move_history.append(Move("y", False, False))
 
 T = TypeVar("T")
 def _transpose(l: List[List[T]]) -> List[List[T]]:

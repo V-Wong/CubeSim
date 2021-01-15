@@ -19,10 +19,10 @@ def test_solve_invert_moves():
 
 
 def test_solve_arbitrary_scrambles():
-    for _ in range(1):
+    for _ in range(100):
         cube = Cube(3)
         scramble = gen_scramble()
-        cube.do_moves(scramble, save_history=False)
+        cube.do_moves(scramble)
         solution = generate_solution(cube)
         cube.do_moves(solution)
         assert cube.is_solved()

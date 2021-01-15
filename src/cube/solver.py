@@ -5,11 +5,12 @@ from copy import deepcopy
 from .cube import Cube
 from .move import Move
 from .cube import WHITE, YELLOW, GREEN, BLUE, ORANGE, RED
+from .history_cube import HistoryCube
 from ..scramble.parser import scramble_to_moves
 
 
 def generate_solution(cube: Cube) -> List[Move]:
-    cube_copy = deepcopy(cube)
+    cube_copy = HistoryCube(cube.size, deepcopy(cube.faces))
 
     solve_cross(cube_copy)
     solve_corners(cube_copy)
@@ -19,10 +20,10 @@ def generate_solution(cube: Cube) -> List[Move]:
     solve_cpll(cube_copy)
     solve_epll(cube_copy)
 
-    return cube_copy.move_history
+    return cube_copy.get_move_history()
 
 
-def solve_cross(cube: Cube):
+def solve_cross(cube: HistoryCube):
     EDGES = {
         "UF": "",
         "UL": "U'",
@@ -114,7 +115,7 @@ def solve_middle_edges(cube: Cube):
                 else:
                     moves = "U2 R' F R F' R U R'"
                 cube.do_moves(moves)
-                cube.do_moves("y", False)
+                cube.do_moves("y")
 
                 break
 
