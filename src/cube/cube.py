@@ -3,7 +3,7 @@ from typing import List, TypeVar, Union
 from itertools import permutations
 
 from .move import Move
-from .colour import Colour, WHITE, GREEN, ORANGE, BLUE, RED, YELLOW
+from .colour import Colour, INITIAL_FACE_COLOUR_MAPPING
 from .pieces import Corner, Edge, CORNER_TO_UFR, EDGE_TO_UF
 from ..scramble import parser
 
@@ -11,15 +11,8 @@ from ..scramble import parser
 class Cube:
     def __init__(self, size: int):
         self.size = size
-
-        self.faces = {
-            "U": self._generate_face(WHITE, size),
-            "F": self._generate_face(GREEN, size),
-            "L": self._generate_face(ORANGE, size),
-            "B": self._generate_face(BLUE, size),
-            "R": self._generate_face(RED, size),
-            "D": self._generate_face(YELLOW, size),
-        }
+        self.faces = {face: self._generate_face(colour, size) 
+                      for face, colour in INITIAL_FACE_COLOUR_MAPPING}
 
     def get_sticker(self, sticker: str) -> Colour:
         for perm in permutations(sticker):
@@ -74,7 +67,7 @@ class Cube:
         return True
 
     def _generate_face(self, colour: Colour, size: int):
-        return [[colour for i in range(size)] for j in range(size)]
+        return [[colour for _ in range(size)] for _ in range(size)]
 
     def _face_rotate(self, face: str):
         self.faces[face] = [list(row) for row in zip(*self.faces[face][::-1])]
