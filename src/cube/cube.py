@@ -1,13 +1,7 @@
 from typing import List, Tuple, Union
 
+from .colour import Colour, WHITE, GREEN, ORANGE, BLUE, RED, YELLOW
 from ..scramble import parser
-
-WHITE = (255, 255, 255)
-GREEN = (0, 255, 0)
-ORANGE = (255, 165, 0)
-YELLOW = (255, 255, 0)
-BLUE = (0, 0, 255)
-RED = (255, 0, 0)
 
 
 class Cube:
@@ -84,7 +78,7 @@ class Cube:
             if save_history:
                 self.move_history.append(move)
 
-    def _generate_face(self, colour: str, size: int):
+    def _generate_face(self, colour: Colour, size: int):
         return [[colour for i in range(size)] for j in range(size)]
 
     def _face_rotate(self, face: str):
