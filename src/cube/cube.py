@@ -85,26 +85,6 @@ class Cube:
             self.faces["F"][-1], self.faces["L"][-1], \
                 self.faces["B"][-1], self.faces["R"][-1] = l[1:] + l[:1]
 
-        elif face == "R":
-            l = [_transpose(l) for l in
-                 [self.faces[face] for face in ["U", "B", "D", "F"]]]
-            r = [l[0][-1][::-1], l[1][0][::-1], l[2][-1], l[3][-1]]
-
-            l[0][-1], l[1][0], l[2][-1], l[3][-1] = r[-1:] + r[:-1]
-
-            for i, face in enumerate(["U", "B", "D", "F"]):
-                self.faces[face] = _transpose(l[i])
-
-        elif face == "L":
-            l = [_transpose(l) for l in
-                 [self.faces[face] for face in ["U", "F", "D", "B"]]]
-            r = [l[0][0], l[1][0], l[2][0][::-1], l[3][-1][::-1]]
-
-            l[0][0], l[1][0], l[2][0], l[3][-1] = r[-1:] + r[:-1]
-
-            for i, face in enumerate(["U", "F", "D", "B"]):
-                self.faces[face] = _transpose(l[i])
-
         elif face == "F":
             l = [self.faces["U"], _transpose(self.faces["R"]),
                  self.faces["D"], _transpose(self.faces["L"])]
@@ -117,33 +97,35 @@ class Cube:
             self.faces["D"][0] = l[2][0]
             self.faces["L"] = _transpose(l[3])
 
+        elif face == "R":
+            self._y_rotate()
+            self._adjacent_face_swap("F")
+            self._y_rotate(inverse=True)
+
+        elif face == "L":
+            self._y_rotate(inverse=True)
+            self._adjacent_face_swap("F")
+            self._y_rotate()
+
         elif face == "B":
-            l = [self.faces["U"], _transpose(self.faces["R"]),
-                 self.faces["D"], _transpose(self.faces["L"])]
-            r = [l[0][0][::-1], l[1][-1], l[2][-1][::-1], l[3][0]]
-
-            l[0][0], l[1][-1], l[2][-1], l[3][0] = r[1:] + r[:1]
-
-            self.faces["U"][0] = l[0][0]
-            self.faces["R"] = _transpose(l[1])
-            self.faces["D"][-1] = l[2][-1]
-            self.faces["L"] = _transpose(l[3])
-
+            self._y_rotate(double=True)
+            self._adjacent_face_swap("F")
+            self._y_rotate(double=True)
+            
     def _rotate(self, move: Move):
-        repeats = 2 if move.double else 3 if move.invert else 1
-        for _ in range(repeats):
+        for _ in range(2 if move.double else 3 if move.invert else 1):
             self._face_rotate(move.face)
             self._adjacent_face_swap(move.face)
 
-    def _y_rotate(self):
-        l = [self.faces[face] for face in ["F", "L", "B", "R"]]
+    def _y_rotate(self, double=False, inverse=False):
+        for i in range(2 if double else 3 if inverse else 1):
+            l = [self.faces[face] for face in ["F", "L", "B", "R"]]
+            self.faces["F"], self.faces["L"], self.faces["B"], self.faces["R"] = l[-1:] + l[:-1]
 
-        self.faces["F"], self.faces["L"], self.faces["B"], self.faces["R"] = l[-1:] + l[:-1]
-
-        self._face_rotate("U")
-        for _ in range(3):
-            self._face_rotate("D")
-  
+            self._face_rotate("U")
+            for _ in range(3):
+                self._face_rotate("D")
+    
 
 T = TypeVar("T")
 def _transpose(l: List[List[T]]) -> List[List[T]]:
