@@ -10,6 +10,8 @@ from ..scramble import parser
 
 class Cube:
     def __init__(self, size: int):
+        self.size = size
+
         self.faces = {
             "U": self._generate_face(WHITE, size),
             "F": self._generate_face(GREEN, size),
@@ -135,15 +137,8 @@ class Cube:
             self.faces["L"] = _transpose(l[3])
 
     def _rotate(self, move: Move):
-        if move.double:
-            for _ in range(2):
-                self._face_rotate(move.face)
-                self._adjacent_face_swap(move.face)
-        elif move.invert:
-            for _ in range(3):
-                self._face_rotate(move.face)
-                self._adjacent_face_swap(move.face)
-        else:
+        repeats = 2 if move.double else 3 if move.invert else 1
+        for _ in range(repeats):
             self._face_rotate(move.face)
             self._adjacent_face_swap(move.face)
 
@@ -152,15 +147,15 @@ class Cube:
             inverted_move = Move(move.face, not move.invert, move.double)
             self._rotate(inverted_move)
 
-    def _y_rotate(self, invert: bool=False):
+    def _y_rotate(self):
         l = [self.faces[face] for face in ["F", "L", "B", "R"]]
 
         self.faces["F"], self.faces["L"], self.faces["B"], self.faces["R"] = l[-1:] + l[:-1]
 
         self._face_rotate("U")
-        self._face_rotate("D")
-        self._face_rotate("D")
-        self._face_rotate("D")
+        for _ in range(3):
+            self._face_rotate("D")
+  
 
 T = TypeVar("T")
 def _transpose(l: List[List[T]]) -> List[List[T]]:
