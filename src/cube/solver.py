@@ -1,11 +1,14 @@
+from typing import List
+
 from copy import deepcopy
 
-from ..scramble.parser import scramble_to_moves
 from .cube import Cube
+from .move import Move
 from .cube import WHITE, YELLOW, GREEN, BLUE, ORANGE, RED
+from ..scramble.parser import scramble_to_moves
 
 
-def generate_solution(cube: Cube):
+def generate_solution(cube: Cube) -> List[Move]:
     cube_copy = deepcopy(cube)
 
     solve_cross(cube_copy)

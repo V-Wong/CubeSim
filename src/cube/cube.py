@@ -1,5 +1,6 @@
 from typing import List, Tuple, TypeVar, Union
 
+from .move import Move
 from .colour import Colour, WHITE, GREEN, ORANGE, BLUE, RED, YELLOW
 from ..scramble import parser
 
@@ -20,12 +21,7 @@ class Cube:
         self.scramble = None
         self.move_history = []
 
-    def get_edge_info(self, piece: str) -> Tuple[int, int]:
-        """
-        We can information about an edge by doing moves to
-        place it in UF, then analyse UF and undo the moves.
-        """
-
+    def get_edge_info(self, piece: str) -> Tuple[Colour, Colour]:
         moves = parser.scramble_to_moves({
             "UF": "U2 U2",
             "UL": "U'",
@@ -42,12 +38,12 @@ class Cube:
         }[piece])
 
         self.do_moves(moves, False)
-        info = self.faces["U"][-1][1], self.faces["F"][0][1]
+        info = Colour(self.faces["U"][-1][1]), Colour(self.faces["F"][0][1])
         self._invert_moves(moves, False)
 
         return info
 
-    def get_corner_info(self, piece: str) -> Tuple[int, int, int]:
+    def get_corner_info(self, piece: str) -> Tuple[Colour, Colour, Colour]:
         moves = parser.scramble_to_moves({
             "UFR": "U2 U2",
             "DFR": "R",
@@ -60,20 +56,20 @@ class Cube:
         }[piece])
 
         self.do_moves(moves, False)
-        info = (self.faces["U"][-1][-1], self.faces["F"][0][-1], self.faces["R"][0][0])
+        info = Colour(self.faces["U"][-1][-1]), Colour(self.faces["F"][0][-1]), Colour(self.faces["R"][0][0])
         self._invert_moves(moves, False)
 
         return info
 
-    def do_moves(self, moves: Union[str, Tuple[int, int, int]], save_history: bool = True):
+    def do_moves(self, moves: Union[str, List[Move]], save_history: bool = True):
         if isinstance(moves, str):
             moves = parser.scramble_to_moves(moves)
 
         for move in moves:
-            if move[0] == "y":
+            if move.face == "y":
                 self._y_rotate()
             else:
-                self._rotate(*move)
+                self._rotate(move)
 
             if save_history:
                 self.move_history.append(move)
@@ -141,25 +137,25 @@ class Cube:
             self.faces["D"][-1] = l[2][-1]
             self.faces["L"] = _transpose(l[3])
 
-    def _rotate(self, face: str, prime: bool = False, double: bool = False):
-        if double:
+    def _rotate(self, move: Move):
+        if move.double:
             for _ in range(2):
-                self._face_rotate(face)
-                self._adjacent_face_swap(face)
-        elif prime:
+                self._face_rotate(move.face)
+                self._adjacent_face_swap(move.face)
+        elif move.invert:
             for _ in range(3):
-                self._face_rotate(face)
-                self._adjacent_face_swap(face)
+                self._face_rotate(move.face)
+                self._adjacent_face_swap(move.face)
         else:
-            self._face_rotate(face)
-            self._adjacent_face_swap(face)
+            self._face_rotate(move.face)
+            self._adjacent_face_swap(move.face)
 
-    def _invert_moves(self, moves: List[Tuple[str, bool, bool]], save_history: bool = True):
+    def _invert_moves(self, moves: List[Move], save_history: bool = True):
         for move in reversed(moves):
             if save_history:
                 self.move_history.append(move)
-            face, prime, double = move
-            self._rotate(face, not prime, double)
+            inverted_move = Move(move.face, not move.invert, move.double)
+            self._rotate(inverted_move)
 
     def _y_rotate(self, invert: bool = False):
         l = [self.faces[face] for face in ["F", "L", "B", "R"]]
@@ -171,7 +167,7 @@ class Cube:
         self._face_rotate("D")
         self._face_rotate("D")
 
-        self.move_history.append(("y", False, False))
+        self.move_history.append(Move("y", False, False))
 
 T = TypeVar("T")
 def _transpose(l: List[List[T]]) -> List[List[T]]:

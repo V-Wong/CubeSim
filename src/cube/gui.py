@@ -5,6 +5,7 @@ import pygame
 from pygame.locals import *
 
 from .cube import Cube
+from .move import Move
 from ..scramble.parser import scramble_to_moves, moves_to_scramble
 from ..scramble.generator import gen_scramble
 from ..scramble.cleaner import clean_moves
@@ -34,15 +35,14 @@ class Gui:
                     key = pygame.key.name(event.key)
 
                     if key in {"u", "f", "l", "r", "d", "b"}:
-                        self.cube._rotate(key.upper(), prime, False)
+                        self.cube._rotate(Move(key.upper(), prime, False))
                         self.draw_cube()
                     elif key == "s":
                         self.cube = Cube(3)
                         self.cube.do_moves(gen_scramble(), save_history=False)
                         self.draw_cube()
                     elif event.key == pygame.K_SPACE:
-                        solution = clean_moves(moves_to_scramble(
-                                               generate_solution(self.cube)))
+                        solution = moves_to_scramble(generate_solution(self.cube))
                         for move in solution.split():
                             self.cube.do_moves(move)
                             self.draw_cube()
