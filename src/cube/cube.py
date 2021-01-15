@@ -1,9 +1,10 @@
-from typing import List, Tuple, TypeVar, Union
+from typing import List, TypeVar, Union
 
+from itertools import permutations
 
 from .move import Move
 from .colour import Colour, WHITE, GREEN, ORANGE, BLUE, RED, YELLOW
-from .pieces import Corner, Edge
+from .pieces import Corner, Edge, CORNER_TO_UFR, EDGE_TO_UF
 from ..scramble import parser
 
 
@@ -23,21 +24,17 @@ class Cube:
         self.scramble = None
         self.move_history = []
 
+    def get_sticker(self, sticker: str) -> Colour:
+        for perm in permutations(sticker):
+            if "".join(perm) in EDGE_TO_UF:
+                return self.get_edge("".join(perm))[sticker[0]]
+            elif "".join(perm) in CORNER_TO_UFR:
+                return self.get_corner("".join(perm))[sticker[0]]
+
+        raise ValueError(f"Not a valid sticker: {sticker}")
+
     def get_edge(self, piece: str) -> Edge:
-        moves = parser.scramble_to_moves({
-            "UF": "U2 U2",
-            "UL": "U'",
-            "UR": "U",
-            "UB": "U2",
-            "LB": "L2 F",
-            "LD": "L' F",
-            "LF": "F",
-            "RB": "R2 F'",
-            "RD": "R F'",
-            "RF": "F'",
-            "DB": "D2 F2",
-            "DF": "F2"
-        }[piece])
+        moves = parser.scramble_to_moves(EDGE_TO_UF[piece])
 
         self.do_moves(moves, False)
         info = Edge({
@@ -49,16 +46,7 @@ class Cube:
         return info
 
     def get_corner(self, piece: str) -> Corner:
-        moves = parser.scramble_to_moves({
-            "UFR": "U2 U2",
-            "DFR": "R",
-            "DBR": "R2",
-            "URB": "U",
-            "ULF": "U'",
-            "UBL": "U2",
-            "DFL": "L' U'",
-            "DBL": "L2 U'"
-        }[piece])
+        moves = parser.scramble_to_moves(CORNER_TO_UFR[piece])
 
         self.do_moves(moves, False)
         info = Corner({
