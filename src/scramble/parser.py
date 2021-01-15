@@ -30,6 +30,16 @@ def moves_to_scramble(moves: List[Move]) -> str:
     return " ".join(scramble)
 
 
+def invert_moves(moves: List[Move]):
+    inverted_moves = []
+
+    for move in reversed(moves):
+        inverted_move = Move(move.face, not move.invert, move.double)
+        inverted_moves.append(inverted_move)
+
+    return inverted_moves
+
+
 if __name__ == "__main__":
     scramble = "L U2 D B' R2 U2 F R B2 U2 R2 U R2 U2 F2 D R2 D F2"
 
