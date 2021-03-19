@@ -59,7 +59,7 @@ This folders contains the tests which can be run using ``python3 -m pytest``.
  
 ## Implementation ##
 ### Cube ###
-This program uses a relatively simplistic representation of the Rubiks Cube. We simply consider the cube to be an array of 6 2-dimensional arrays, each representing a face of the cube. Each element of these 2-dimensional arrays then represents a sticker on the cube.
+This program uses a relatively simplistic representation of the Rubik's Cube. We simply consider the cube to be an array of 6 2-dimensional arrays, each representing a face of the cube. Each element of these 2-dimensional arrays then represents a sticker on the cube.
 
 A single face turn then can be implemented by:
 
