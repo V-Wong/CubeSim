@@ -25,7 +25,7 @@ $ source venv/bin/activate
 
 Install the dependencies inside the virtual environment
 ```
-$ pip -r requirements.txt
+$ pip install -r requirements.txt
 ```
 
 Launch the main graphical user interface
